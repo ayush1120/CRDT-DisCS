@@ -37,6 +37,11 @@ Change Directory to <repository>/scarf
 $ cd <path to repo>/scarf
 ```
 
+Initialize Database & Update Migrations
+```sh
+$ python initialize_database.py
+```
+
 Start the django server in development mode vi command
 ```sh
 $ python manage.py runserver
