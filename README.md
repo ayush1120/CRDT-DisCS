@@ -42,7 +42,7 @@ Initialize Database & Update Migrations
 $ python initialize_database.py
 ```
 
-Start the django server in development mode vi command
+Start the django server in development mode via command
 ```sh
 $ python manage.py runserver
 ```
