@@ -1,0 +1,80 @@
+{% load static %}
+
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+    <meta http-equiv="x-ua-compatible" content="ie=edge">
+    <title>CRDT-DisCS</title>
+    <!-- Font Awesome -->
+    <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.8.2/css/all.css">
+    <!-- Bootstrap core CSS -->
+    <link href="{% static 'css/bootstrap.min.css' %}" rel="stylesheet">
+    <!-- Material Design Bootstrap -->
+    <link href="{% static 'css/mdb.min.css' %}" rel="stylesheet">
+    <!-- Your custom styles (optional) -->
+    <link href="{% static 'css/style.css' %}" rel="stylesheet">
+</head>
+
+<body>
+    <!-- SCRIPTS -->
+    <!-- JQuery -->
+    <script type="text/javascript" src="{% static 'js/jquery-3.4.1.min.js' %}"></script>
+    <!-- Bootstrap tooltips -->
+    <script type="text/javascript" src="{% static 'js/popper.min.js' %}"></script>
+    <!-- Bootstrap core JavaScript -->
+    <script type="text/javascript" src="{% static 'js/bootstrap.min.js' %}"></script>
+    <!-- MDB core JavaScript -->
+    <script type="text/javascript" src="{% static 'js/mdb.min.js' %}"></script>
+
+    <!-- Start your project here-->
+    {% include 'navbar.html' %}
+    
+    <!-- <div class="container-fluid">
+        <div class="row">
+            <div class="col-md-12">
+                {% include 'home.html' %}
+            </div>
+        </div>
+    </div> -->
+
+    <div class="container-fluid">
+        <div class="row">
+            <div class="col-md-12">
+                <br> <br> <br>
+                <div class="page-header">
+                    <h1>
+                        CRDT-DisCS: <small>CRDT based Distributed Consensus System</small>
+                    </h1>
+                </div>
+                <br>
+                <div class="jumbotron">
+                    <h2>
+                        CRDT-DisCS
+                    </h2>
+                    <p>
+                        This project aims to deliver a generic implementation of CRDT that can be successfully applied
+                        and implemented on any database setup/cluster, irrespective of the complexities and precisions
+                        of metadata involved.
+                    </p>
+                    <p>
+                        <a class="btn btn-primary btn-large"
+                            href="https://docs.google.com/document/d/1VCTHx3wVX6Us8y8xRrRbpZXsHLyIKg_P1zGGLV11iZw/edit?usp=sharing">Learn
+                            more</a>
+                    </p>
+                </div>
+                {% include 'home.html' %}
+            </div>
+        </div>
+    </div>
+
+
+
+    <br>
+    {% include 'footer.html' %}
+
+</body>
+
+</html>
