@@ -1,19 +1,16 @@
+# import sys
+# sys.path.append('..')
 import mongoengine
-from data.users import User
+from discs.data.users import User
 from services import databaseWrite
+from services.databaseWrite import connect_with_database
+from manageDatabases import listDatabases, deleteDatabase
+from discs.services.databaseRead import *
 
 def global_init():
     mongoengine.register_connection(alias='core', name='test_db')
 
 
-def readUsers(user_id):
-    user =  User.objects(user_id=user_id).first()
-    return user
-
-def print_user(user):
-    print('user_id: ', user.user_id)
-    print('name: ', user.name)
-    print('age: ', user.age)
 
 def main():
     global_init()
@@ -31,4 +28,22 @@ def main():
 
 
 if __name__ == "__main__":
-    main()
+    # main()
+    print(listDatabases())
+    deleteDatabase(dbName='CRDT-DisCS__DB1')
+    deleteDatabase(dbName='CRDT-DisCS__DB2')
+    print(listDatabases())
+    databaseWrite.addUser("newUser", "Shyam", 34, "Indian", dbName="CRDT-DisCS__DB1")
+    databaseWrite.addUser("newUser1", "Rohith", 32, "Pakistani", dbName="CRDT-DisCS__DB2")
+    databaseWrite.addUser("newUser2", "Jose", 30, "African", dbName="CRDT-DisCS__DB2")
+    print(listDatabases())
+    print("In database CRDT-DisCS__DB1 : ")
+    users = readUsers(dbName='CRDT-DisCS__DB1')
+    print_users(users)
+    print("In database CRDT-DisCS__DB2 : ")
+    users = readUsers(dbName='CRDT-DisCS__DB2')
+    print_users(users)
+    print(listDatabases())
+    deleteDatabase(dbName='CRDT-DisCS__DB1')
+    deleteDatabase(dbName='CRDT-DisCS__DB2')
+    print(listDatabases())

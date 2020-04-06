@@ -1,9 +1,11 @@
-from typing import List, Optional
 import mongoengine
 import pymongo
-from data.users import User
+from discs.data.users import User
+from discs.settings import  connect_with_database
 
-def addUser(user_id, name, age, nationality):
+
+@connect_with_database
+def addUser(user_id, name, age, nationality, **kwargs):
     user = User()
     user.user_id = user_id
     user.name = name
@@ -15,7 +17,8 @@ def addUser(user_id, name, age, nationality):
     return user
 
 
-def changeUserDetails(user_id, name, age, nationality):
+@connect_with_database
+def changeUserDetails(user_id, name, age, nationality, **kwargs):
     user = User.objects(user_id=user_id).first()
 
     user.name = name
@@ -26,6 +29,7 @@ def changeUserDetails(user_id, name, age, nationality):
     return user
 
 
-def deleteUser(user_id):
+@connect_with_database
+def deleteUser(user_id, **kwargs):
     user = User.objects(user_id=user_id).first()
     user.delete()

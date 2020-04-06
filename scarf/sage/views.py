@@ -18,11 +18,27 @@ import uuid
 from scarf.settings import BASE_DIR
 from sage.models import  *
 
-
+from discs.settings import DATABASES_NAMES
+from discs.services import databaseRead 
 
 
 def home(request):
     # Hello this is a function which returns home
-    return render(request, 'base.html')
+    return render(request, 'base.html', {
+        'DATABASES_NAMES' : DATABASES_NAMES,
+    })
     # return HttpResponse("Hello")
+
+@csrf_exempt
+def getUsers(request):
+    if request.method == 'POST':
+        dbName = json.loads(request.POST['dbName'])
+        # print('dbName : ', dbName)
+        users_json = databaseRead.readUsers(dbName=dbName).to_json()
+        users = json.dumps(users_json)
+        # print('type of users : ', type(users))
+        return JsonResponse({
+            "status" : True,
+            "users" : users,
+        })
     

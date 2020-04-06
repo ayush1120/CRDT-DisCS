@@ -21,9 +21,10 @@ from django.urls import path
 from sage import views
 
 app_name = 'sage'
-
 urlpatterns = [
+    path('ajaxGetUsers', views.getUsers, name='getUsers'),
     path('', views.home, name='home'),
+    
 ]
 
 # urlpatterns += staticfiles_urlpatterns()
