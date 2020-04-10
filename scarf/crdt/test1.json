@@ -1,0 +1,21 @@
+{
+    "Users": {
+        "payload": [{
+            "Name": "Ayush",
+            "Nationality": "Belgian",
+            "Age": 72
+        }, {
+            "Name": "Saptarshi",
+            "Nationality": "Greek",
+            "Age": 48
+        }, {
+            "Name": "Robert",
+            "Nationality": "English",
+            "Age": 25
+        }, {
+            "Name": "Stafford",
+            "Nationality": "American",
+            "Age": 41
+        }]
+    }
+}

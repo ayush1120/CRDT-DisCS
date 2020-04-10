@@ -20,13 +20,13 @@ def addUser(user_id, name, age, nationality, **kwargs):
 @connect_with_database
 def changeUserDetails(user_id, name, age, nationality, **kwargs):
     user = User.objects(user_id=user_id).first()
-
     user.name = name
     user.age = age
     user.nationality = nationality
-
     user.save()
     return user
+
+
 
 
 @connect_with_database

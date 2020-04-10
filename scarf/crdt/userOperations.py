@@ -14,3 +14,4 @@ def addPost(index,data):
 def removePost(index,data):
     data["type"]="RemovePost"
     twoPSet[index].remove(data)
+

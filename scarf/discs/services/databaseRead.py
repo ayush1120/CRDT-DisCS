@@ -5,7 +5,7 @@ import mongoengine
 
 @connect_with_database
 def readUser(user_id, **kwargs):
-    user =  User.objects(user_id=user_id).firsr()
+    user =  User.objects(user_id=user_id).first()
     return user
 
 
