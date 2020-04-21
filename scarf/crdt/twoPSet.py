@@ -2,10 +2,9 @@ from gset import GSet
 
 class TwoPSet:
 
-    def __init__(self, id):
-        self.A = GSet(id)
-        self.R = GSet(id)
-        self.id = id
+    def __init__(self):
+        self.A = GSet()
+        self.R = GSet()
 
     def add(self, elem):
         self.A.add(elem)
