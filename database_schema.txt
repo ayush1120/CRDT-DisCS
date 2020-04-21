@@ -1,0 +1,133 @@
+Schema For Underlying Database -
+
+Users 
+    User Entery
+        pk
+        username (unique)
+        Full Name
+        Nationality
+        Age
+        Followers  < [username] > 
+        Posts < [post_ids] >
+        Liked Posts <[post_ids]>
+
+
+Post
+    Posts
+        post_id
+        owner_id
+        content
+        date
+        time
+        likes  (no dislike but unlike should be there)
+
+
+
+Schema For Middleware Database  (In MongoDB)
+
+
+# Store (From Memory to Database) : (post_updates.to_dict).to_json_String   // type(post_updates) = twoPSet
+# Load (From Database to Memory) :  new 2pSet_object.__dict__ =  load_json_to_dict(post_updates)   // type(post_updates) = json
+
+
+1. Collection Users_updates: 
+entries
+    id=1. users_Gset 
+
+2. Collection FullName Update
+    id=1, user=username(unique) , full_name // type(full_name) = LWW
+
+3. Collection Nationality Update
+    id=1, user=userneme(unique) , nationality_updates // type( nationality_updates ) = LWW 
+
+4. Collection Age Update
+    id=1, user=username(unique) , age_update // type(age_update) = LWW
+
+
+5. Collection Followers
+    id=1, user=username(unique) , followers // type(followers) = twoPset of usernames
+
+
+6. Collection Post_Update  // addition or deletion of posts
+entries:
+    id=1, user=username(unique)  /* Owner */ , post_updates // type(post_updates) = twoPSet of post_ids
+
+query example -> Post_Update.objects(username='ayush')  
+
+
+7. Collection LikedPosts Update
+    id=1, user=username(unique) , liked_post_update // type(liked_post_update) = twoPset of post_ids
+
+
+8. Collection Post_Content_Update
+    id=1, post_id=post_id, post_content // type(post_content) = LWW
+
+
+
+✔ | ❌ 
+
+Steps: 
+
+1> Underlying & Middleware Database Creation
+    a. Schema Deciding for underlying database (See Above)             ✔
+    b. Code & make mongo database
+    c. Decide schema for middleware (See Above)                        ✔
+    d. make middleware database by code in json & mongoDB
+
+
+2>  (i). Make Generic Functions for reading data
+        a. Get User data by id
+        b. Get User data by username
+        c. Get Posts by user_id (should return all post ids) 
+        d. Get Posts by username (should return all post ids)
+        e. Get Post_details by post_id
+        f. Get Followers by user_id 
+        g. Get Followers by username 
+        h. Check if post is liked or not by post_id
+        i. Get all liked posts by a username  
+        j. Get all liked posts by a user_id  
+        
+    (ii). Make Generic Functions to update or write attributes
+        a. Add user
+        b. Change user fullname -> Check if user Exists
+        c. Change Nationality -> Check if user Exists
+        d. Change Age -> Check if user Exists
+        e. Add Follower -> Check if user Exists
+        f. Remove Follower -> Check if user Exists
+        g. Add post -> Check if user Exists
+        h. Change post content -> Check if post exists
+        i. Like a post -> Check if post exists
+        j. Unlike a post -> Check if post exists
+        k. Delete a post -> Check if post exists
+
+3>  Above Functions (2 ii.)  should have choice to load to middleware database / write query to raft / do not
+    separate function ->  
+        i. Call above function to update middleware dataset
+        ii. Add data to middleware / raft / or do nothing -> This will Call 4
+
+
+4> Make functions to update middleware database
+
+5> Make engine to empty & send middleware data & update middleware data, & get from other databases & merge in middleware, update underlying to latest. 
+    
+    Assumption:  
+        a. There are middleware datbases 1, 2, 3 & 4.
+        b. The middleware datbase in our concern is 2 
+    2's engine's process is written below 
+    
+    For Consensus in middleware database 2 :
+        a. Fetch data from middleware databases 1, 3 & 4.
+        b. Merge the received data with the CRDT objects in middleware database 2 to achieve the conensus in this database
+        c. Send the updated data in the ordered manner to the underlying database-2
+        d. Clear middleware database 2
+        
+    On fetch call to database 2 :
+        a. Get middleware database 2's data
+        b. Return it 
+
+    CRDT consensus is working. 
+
+
+
+6> Implement time stamps
+

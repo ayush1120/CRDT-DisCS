@@ -1,7 +1,6 @@
 import pymongo
 import time
 
-
 def getClient():
     client = pymongo.MongoClient()
     return client

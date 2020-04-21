@@ -11,7 +11,6 @@ def addUser(user_id, name, age, nationality, **kwargs):
     user.name = name
     user.age = age
     user.nationality = nationality
-
     user.save()
 
     return user

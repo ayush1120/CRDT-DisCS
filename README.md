@@ -47,3 +47,8 @@ Start the django server in development mode via command
 $ python manage.py runserver
 ```
 Visit http://localhost:8000/ in your browser to see the web interface. 
+
+Deactivate the virtual environment by command
+```sh
+$ deactivate
+```

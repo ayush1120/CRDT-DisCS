@@ -1,5 +1,5 @@
-# import sys
-# sys.path.append('..')
+import sys
+sys.path.append('..')
 import mongoengine
 from discs.data.users import User
 from services import databaseWrite
@@ -29,7 +29,7 @@ def main():
 
 if __name__ == "__main__":
     # main()
-    print(listDatabases())
+    print("Before Running the Code :" ,listDatabases())
     deleteDatabase(dbName='CRDT-DisCS__DB1')
     deleteDatabase(dbName='CRDT-DisCS__DB2')
     print(listDatabases())
