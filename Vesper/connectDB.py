@@ -1,6 +1,6 @@
 import sys
 sys.path.append('../scarf/')
-
+import json
 
 from discs.data.underlying.posts import Post
 from discs.populate import get_fake_post
@@ -10,6 +10,10 @@ from discs.manageDatabases import listDatabases, deleteDatabase
 
 
 dbName = "test_lola"
+
+# name "Leslie Lampart"
+
+# name msg
 
 msg= {
     'type' : 'add_user',
@@ -42,3 +46,11 @@ if __name__ == "__main__":
 
     deleteDatabase(dbName=dbName)
     print(listDatabases())
+
+    # a = json.dumps(msg) # dumps -> python object to json string 
+    # print("type of a : ", type(a))
+    # print(f'a : {a}')
+    # print('\n-----------------------------\n')
+    # b = json.loads(a) # loads -> json string to python object
+    # print(f'type of b : {type(b)}')
+    # print(f'b : \n{b}')
