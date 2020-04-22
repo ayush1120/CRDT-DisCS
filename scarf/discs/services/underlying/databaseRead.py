@@ -1,5 +1,5 @@
 from discs.settings import connect_with_database
-from discs.data.users import User
+from discs.data.underlying.users import User
 
 import mongoengine
 
@@ -22,6 +22,6 @@ def print_users(users):
 
 
 def print_user(user):
-    print('user_id: ', user.user_id)
+    print('user_id: ', user.id)
     print('name: ', user.name)
     print('age: ', user.age)

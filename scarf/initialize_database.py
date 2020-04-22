@@ -22,7 +22,7 @@ from discs.manageDatabases import  listDatabases, deleteDatabase
 def add_fake_user(dbName=None):
     fake = Faker()    
     name = fake.name()
-    age = random.randint(4, 72)
+    age = random.randint(4, 72) 
     user_id = uuid.uuid4().hex[:6].upper()
     examples = ['Indian', 'American', 'Bósnia', 'Turca', 'Italiana', 'Argelina', 'Moldava']
     nationality = examples[random.randint(0,6)]
