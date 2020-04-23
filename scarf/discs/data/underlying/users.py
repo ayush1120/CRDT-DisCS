@@ -3,16 +3,14 @@ import mongoengine
 
 class User(mongoengine.Document):
     username = mongoengine.StringField(required=True, unique=True)
-    full_name = mongoengine.StringField(required=True, max_length=200)
+    name = mongoengine.StringField(required=True, max_length=200)
     age = mongoengine.IntField(min_value=1)
     nationality = mongoengine.StringField(default='Indian')
     followers = mongoengine.ListField()
     following = mongoengine.ListField()
+    posts = mongoengine.ListField()
+    liked_posts = mongoengine.ListField()
 
-    @property
-    def name(self):
-        return self.full_name
-    
     @property
     def num_followers(self):
         return len(self.followers)

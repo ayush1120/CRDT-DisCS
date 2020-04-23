@@ -28,8 +28,11 @@ fake = Faker()
 def get_fake_user():
     name = fake.name()
     age = random.randint(4, 75)
-    nationality = NATIONALITIES[random.randint(0, len(NATIONALITIES))]
-    return [name, age, nationality ]
+    nationality = NATIONALITIES[random.randint(0, len(NATIONALITIES)-1)]
+    username = fake.user_name()
+    user = User(name=name, username=username, nationality=nationality, age=age)
+    # return [name, username, age, nationality ]
+    return user
 
 def get_fake_post():
     """
@@ -44,5 +47,7 @@ if __name__ == "__main__":
     post = get_fake_post()
     print("Creation Time : ", post.creation_time)
     print("Content : ", post.content)
+    user = get_fake_user()
+    print(user)
 
 

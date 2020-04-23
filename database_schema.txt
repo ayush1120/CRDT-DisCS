@@ -95,15 +95,15 @@ Steps:
         (ii). Make Generic Functions to update or write attributes          UnderlyingDB
             a. Add user                                                         ✔
             b. Change user fullname -> Check if user Exists                     ✔
-            c. Change Nationality -> Check if user Exists                         
-            d. Change Age -> Check if user Exists                                                 
-            e. Add Follower -> Check if user Exists                                                 
-            f. Remove Follower -> Check if user Exists                                                 
-            g. Add post -> Check if user Exists                                                 
-            h. Change post content -> Check if post exists                                                 
-            i. Like a post -> Check if post exists                                                 
-            j. Unlike a post -> Check if post exists                                                 
-            k. Delete a post -> Check if post exists                                                 
+            c. Change Nationality -> Check if user Exists                       ✔  
+            d. Change Age -> Check if user Exists                               ✔                
+            e. Add Follower -> Check if user Exists                             ✔                    
+            f. Remove Follower -> Check if user Exists                          ✔                       
+            g. Add post -> Check if user Exists                                 ✔              
+            h. Change post content -> Check if post exists                      ✔                           
+            i. Like a post -> Check if post exists                              ✔                  
+            j. Unlike a post -> Check if post exists                            ✔                     
+            k. Delete a post -> Check if post exists                            ✔                     
 
 3>  Above Functions (2 ii.)  should have choice to load to middleware database / write query to raft / do not
     separate function ->  

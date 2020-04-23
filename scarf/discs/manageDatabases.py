@@ -48,3 +48,15 @@ if __name__ == "__main__":
         dbName = "CRDT-DisCS__DB"+str(i)
         deleteDatabase(dbName=dbName)
     print(listDatabases())
+
+def delete_project_databases():
+    """
+    Function to delete project databases.
+    i.e. databases with 'CRDT-DisCS' in their name.  
+    """
+    print('Databases before deletion : \n', listDatabases())
+    databases = listDatabases()
+    for database in databases:
+        if 'CRDT-DisCS' in database:
+            deleteDatabase(dbName=database)
+    print('Databases after deletion : \n', listDatabases())
