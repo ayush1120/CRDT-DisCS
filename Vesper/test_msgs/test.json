@@ -1,0 +1,9 @@
+{
+    "type": "add_user",
+    "args": {
+        "name": "Sukhiya",
+        "username": "soku",
+        "nationality": "Indian",
+        "age": 20
+    }
+}

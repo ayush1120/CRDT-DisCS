@@ -52,7 +52,9 @@ def get(addr, key):
     payload = {'key': key}
     message = {"type": "get", "payload": payload}
     # redirecting till we find the leader, in case of request during election
-    print(redirectToLeader(server_address, message))
+    output = redirectToLeader(server_address, message)
+    print(output)
+    return output
 
 
 if __name__ == "__main__":

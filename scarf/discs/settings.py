@@ -13,12 +13,14 @@ def connect_with_database(orig_func):
     def wrapper(*args, **kwargs):
         if (DEBUG==True) and 'dbName' in kwargs:
             dbName = kwargs.get('dbName')
-            mongoengine.register_connection(alias='core', name=dbName)
-            results = orig_func(*args, **kwargs)
-            mongoengine.disconnect(alias='core')
-            return results
-        else:
-            return orig_func(*args, **kwargs)
+            if dbName is not None:
+                print('Connecting with database')
+                mongoengine.register_connection(alias='core', name=dbName)
+                results = orig_func(*args, **kwargs)
+                mongoengine.disconnect(alias='core')
+                return results
+        
+        return orig_func(*args, **kwargs)
     
     return wrapper
 
