@@ -15,19 +15,11 @@ from django.contrib.auth.models import User
 from scarf import settings
 
 
-from discs.settings import DATABASES_NAMES
-from discs.services import databaseWrite
+from discs.settings import DATABASES_NAMES, connect_with_database
+from discs.services.underlying import databaseWrite
 from discs.manageDatabases import  listDatabases, deleteDatabase
+from discs import populate
 
-def add_fake_user(dbName=None):
-    fake = Faker()    
-    name = fake.name()
-    age = random.randint(4, 72) 
-    user_id = uuid.uuid4().hex[:6].upper()
-    examples = ['Indian', 'American', 'Bósnia', 'Turca', 'Italiana', 'Argelina', 'Moldava']
-    nationality = examples[random.randint(0,6)]
-
-    databaseWrite.addUser(user_id=user_id, name=name, age=age, nationality=nationality, dbName=dbName)
 
 
 def add_data():
@@ -35,7 +27,11 @@ def add_data():
     Faker.seed(69)
     for database in DATABASES_NAMES:
         for i in range(1, random.randint(2,6)):
-            add_fake_user(dbName=database)
+            populate.add_fake_users(10, dbName=database)
+            populate.add_fake_posts(15, dbName=database)
+            populate.add_random_likes(100, dbName=database)
+            populate.add_random_followers(50, dbName=database)
+    
 
 
 

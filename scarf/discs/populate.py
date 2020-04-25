@@ -60,7 +60,7 @@ def add_fake_posts(NUM_FAKE_POSTS, **kwargs):
 
 
 @connect_with_database
-def add_random_followers(MAX_NUM_CONNECTIONS):
+def add_random_followers(MAX_NUM_CONNECTIONS, **kwargs):
     NUM_CONNECTIONS = MAX_NUM_CONNECTIONS
     users = databaseRead.readUsers()
     num_users = len(users)
@@ -83,7 +83,7 @@ def add_random_followers(MAX_NUM_CONNECTIONS):
 
 
 @connect_with_database
-def add_random_likes(MAX_NUM_LIKES):
+def add_random_likes(MAX_NUM_LIKES, **kwargs):
     users = databaseRead.readUsers()
     posts = databaseRead.readPosts()
     max_likes = int(len(users)*len(posts))

@@ -14,7 +14,7 @@ def connect_with_database(orig_func):
         if (DEBUG==True) and 'dbName' in kwargs:
             dbName = kwargs.get('dbName')
             if dbName is not None:
-                print('Connecting with database')
+                # print('Connecting with database')
                 mongoengine.register_connection(alias='core', name=dbName)
                 results = orig_func(*args, **kwargs)
                 mongoengine.disconnect(alias='core')
