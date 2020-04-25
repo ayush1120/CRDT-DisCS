@@ -2,6 +2,13 @@ import threading
 import time
 import utils
 from config import cfg
+import mongoengine
+
+
+import sys
+sys.path.append('../scarf/')
+from discs.services.underlying import databaseWrite
+from raft2DB import parseMessage
 
 FOLLOWER = 0
 CANDIDATE = 1
@@ -9,11 +16,16 @@ LEADER = 2
 
 
 class Node():
-    def __init__(self, fellow, my_ip):
+    def __init__(self, fellow, my_ip, index):
         self.addr = my_ip
         self.fellow = fellow
         self.lock = threading.Lock()
         self.DB = {}
+
+        self.dbName = 'RAFT_DB_' + str(index)
+        print("Databasename : ", self.dbName)
+        mongoengine.register_connection(alias='core', name=self.dbName)
+
         self.log = []
         self.staged = None
         self.term = 0
@@ -23,6 +35,7 @@ class Node():
         self.commitIdx = 0
         self.timeout_thread = None
         self.init_timeout()
+        
 
     # increment only when we are candidate and receive positve vote
     # change status to LEADER and start heartbeat as soon as we reach majority
@@ -284,5 +297,6 @@ class Node():
         key = self.staged["key"]
         value = self.staged["value"]
         self.DB[key] = value
+        parseMessage(msg=self.DB[key], dbName=self.dbName)
         # empty the staged so we can vote accordingly if there is a tie
         self.staged = None

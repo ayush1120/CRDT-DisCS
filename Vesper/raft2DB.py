@@ -12,7 +12,6 @@ from discs.services.underlying.databaseRead import readUsers, print_users
 from discs.services.underlying.databaseWrite import add_post, add_user, update_user_name
 
 
-
 msg = None
 
 with open("test_msgs/test.json", 'r') as json_file:
@@ -187,7 +186,7 @@ if __name__ == "__main__":
 
     from client import put, get
     
-    mongoengine.register_connection(alias='core', name=dbName)
+    # mongoengine.register_connection(alias='core', name=dbName)
     start = time.perf_counter()
     
     addr = "http://127.0.0.1:500" + str(random.randint(0, 2))
@@ -195,25 +194,25 @@ if __name__ == "__main__":
     key = 'my_msg'
     value = msg
     put(addr, key, value)
-    addr = "http://127.0.0.1:500" + str(random.randint(0, 2))
-    print("Recieving Address : ", addr)
-    recv_msg = get(addr, key)
-    # print('Recieved message : ',recv_msg)
+    # addr = "http://127.0.0.1:500" + str(random.randint(0, 2))
+    # print("Recieving Address : ", addr)
+    # recv_msg = get(addr, key)
+    # # print('Recieved message : ',recv_msg)
 
-    print("Num of Users : ", len(readUsers()))
+    # print("Num of Users : ", len(readUsers()))
 
-    parsable_message = recv_msg['payload']['value']
-    parseMessage(parsable_message, dbName=None)
+    # parsable_message = recv_msg['payload']['value']
+    # parseMessage(parsable_message, dbName=None)
     
-    users = readUsers()
-    print("Num of Users : ", len(users))
-    print("----------------Users----------------- ")
-    print_users(users)
+    # users = readUsers()
+    # print("Num of Users : ", len(users))
+    # print("----------------Users----------------- ")
+    # print_users(users)
     
-    finish = time.perf_counter()
-    print(f'\n\n\nFinished in {round(finish-start, 3)} seconds')
+    # finish = time.perf_counter()
+    # print(f'\n\n\nFinished in {round(finish-start, 3)} seconds')
 
-    mongoengine.disconnect(alias='core')
+    # mongoengine.disconnect(alias='core')
 
     # deleteDatabase(dbName=dbName)
     # https://www.pluralsight.com/guides/web-scraping-with-request-python

@@ -44,7 +44,6 @@ entries
 4. Collection Age Update
     id=1, user=username(unique) , age_update // type(age_update) = LWW
 
-
 5. Collection Followers
     id=1, user=username(unique) , followers // type(followers) = twoPset of usernames
 
@@ -117,7 +116,10 @@ Steps:
 
 4> Make functions to update middleware database
 
-5> Make engine to empty & send middleware data & update middleware data, & get from other databases & merge in middleware, update underlying to latest. 
+
+5> Make messages for sending middleware data. -> message making & parsing functions.
+
+6> Make engine to empty & send middleware data & update middleware data, & get from other databases & merge in middleware, update underlying to latest. 
     
     Assumption:  
         a. There are middleware datbases 1, 2, 3 & 4.
@@ -138,5 +140,5 @@ Steps:
 
 
 
-6> Implement time stamps
+7> Implement time stamps
 

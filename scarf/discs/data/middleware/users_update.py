@@ -1,6 +1,6 @@
 import mongoengine
 
-class Users_update(mongoengine.Document):
+class Users_update(mongoengine.Document): 
     users = mongoengine.StringField()
     
     meta = {

@@ -29,7 +29,7 @@ def value_put():
     reply = {"code": 'fail'}
 
     if n.status == LEADER:
-        # request handle, reply is a dictionary
+        # request handle, reply is a dictionary   
         result = n.handle_put(payload)
         if result:
             reply = {"code": "success"}
@@ -45,7 +45,7 @@ def value_put():
 def vote_req():
     # also need to let me know whether up-to-date or not
     term = request.json["term"]
-    commitIdx = request.json["commitIdx"]
+    commitIdx = request.json["commitIdx"] 
     staged = request.json["staged"]
     choice, term = n.decide_vote(term, commitIdx, staged)
     message = {"choice": choice, "term": term}
@@ -64,6 +64,9 @@ def heartbeat():
 log = logging.getLogger('werkzeug')
 log.disabled = True
 
+
+
+
 if __name__ == "__main__":
     # python server.py index ip_list
     if len(sys.argv) == 3:
@@ -78,7 +81,7 @@ if __name__ == "__main__":
 
         http, host, port = my_ip.split(':')
         # initialize node with ip list and its own ip
-        n = Node(ip_list, my_ip)
+        n = Node(ip_list, my_ip, index)
         app.run(host="0.0.0.0", port=int(port), debug=False)
     else:
         print("usage: python server.py <index> <ip_list_file>")
