@@ -216,6 +216,4 @@ if __name__ == "__main__":
     mongoengine.disconnect(alias='core')
 
     # deleteDatabase(dbName=dbName)
-
-
     # https://www.pluralsight.com/guides/web-scraping-with-request-python

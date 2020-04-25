@@ -6,10 +6,10 @@ class User(mongoengine.Document):
     name = mongoengine.StringField(required=True, max_length=200)
     age = mongoengine.IntField(min_value=1)
     nationality = mongoengine.StringField(default='Indian')
-    followers = mongoengine.ListField()
-    following = mongoengine.ListField()
-    posts = mongoengine.ListField()
-    liked_posts = mongoengine.ListField()
+    followers = mongoengine.ListField() # List of Follower Usernames
+    following = mongoengine.ListField() # List of Following Usernames
+    posts = mongoengine.ListField() # List of Post_ids made by a user
+    liked_posts = mongoengine.ListField() # List of Post_ids liked by a user
 
     @property
     def num_followers(self):

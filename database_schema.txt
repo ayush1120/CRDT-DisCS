@@ -78,19 +78,21 @@ Steps:
 
 2>  a. Add fake data
     b.
-        (i). Make Generic Functions for reading data
-            a. Get User data by id
-            b. Get User data by username
-            c. Get Posts by user_id (should return all post ids) 
-            d. Get Posts by username (should return all post ids)
-            e. Get Post_details by post_id
-            f. Get Followers by user_id 
-            g. Get Followers by username 
-            h. Check if post is liked or not by post_id
-            i. Get all liked posts by a username  
-            j. Get all liked posts by a user_id 
-            k. Get Following by user_id 
-            l. Get Following by username  
+        (i). Make Generic Functions for reading data                        UnderlyingDB
+            a. Get User data by id                                              ✔
+            b. Get User data by username                                        ✔                                                  
+            c. Get Posts by user_id (should return all post ids)                ✔                              
+            d. Get Posts by username (should return all post ids)               ✔                              
+            e. Get Post_details by post_id                                      ✔       
+            f. Get Followers by user_id                                         ✔     
+            g. Get Followers by username                                        ✔      
+            h. Check if post is liked or not by user_id                         ✔                    
+            i. Get all liked posts by a username                                ✔               
+            j. Get all liked posts by a user_id                                 ✔             
+            k. Get Following by user_id                                         ✔     
+            l. Get Following by username                                        ✔ 
+            m. Get Number of Likes by post_id                                   ✔
+            n. Check if post is liked or not by username                        ✔
             
         (ii). Make Generic Functions to update or write attributes          UnderlyingDB
             a. Add user                                                         ✔
@@ -104,6 +106,8 @@ Steps:
             i. Like a post -> Check if post exists                              ✔                  
             j. Unlike a post -> Check if post exists                            ✔                     
             k. Delete a post -> Check if post exists                            ✔                     
+
+
 
 3>  Above Functions (2 ii.)  should have choice to load to middleware database / write query to raft / do not
     separate function ->  

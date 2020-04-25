@@ -108,6 +108,8 @@ def add_follower(username, follower, **kwargs):
     """
     if(check_user(username) and check_user(follower)):
         user = User.objects(username=username).first()
+        if follower in user.followers:
+            return False
         user.followers.append(follower)
         user.save()
         user1 = User.objects(username=follower).first()
@@ -158,6 +160,7 @@ def add_post(author='aush', creation_time=datetime.datetime.now, content='This i
         post_id = post.id
         user = User.objects(username=author).first()
         user.posts.append(post_id)
+        user.save()
         return post_id
     return "User does not exist"
 
