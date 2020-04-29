@@ -3,8 +3,8 @@ from gcounter import GCounter
 
 class PNCounter:
     def __init__(self):
-        self.P = GCounter(id)
-        self.N = GCounter(id)
+        self.P = GCounter()
+        self.N = GCounter()
 
     def add_new_node(self, key):
         self.P.add_new_node(key)

@@ -8,6 +8,7 @@ import mongoengine
 import sys
 sys.path.append('../scarf/')
 from discs.services.underlying import databaseWrite
+from discs import manageDatabases
 from raft2DB import parseMessage
 
 FOLLOWER = 0
@@ -24,6 +25,7 @@ class Node():
 
         self.dbName = 'RAFT_DB_' + str(index)
         print("Databasename : ", self.dbName)
+        manageDatabases.deleteDatabase(dbName=self.dbName)
         mongoengine.register_connection(alias='core', name=self.dbName)
 
         self.log = []

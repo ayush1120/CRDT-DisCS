@@ -142,3 +142,34 @@ Steps:
 
 7> Implement time stamps
 
+
+
+
+FOR TODAY !! MUST DO
+1. update_database complete and check -> middleware going and update -> Testing Remaining
+
+2. 2 middleware merge code -> assuming message like data
+    Alternative Ways To Implement
+        i> merge two middleware data  -> first msg se aata, second apan connected middleware se nikalte aur merge karke ghusa dete  ->  This is decided (delete kab karna ye decide karna)
+        ii> merge two middleware data  -> first msg se aata, secon apn pahle se nikal ke rakh lete, aur merge karte   
+
+3. Code to write to underlying database from middleware
+        Note : (Add user hai/ Add post) me ye check daalna ki already hain to mat daalo
+
+
+4. Flask servers for CRDT for middleware 
+    a. join merge one code
+        ON RECEIVING MESSAGES THEY WILL MERGE THE DATABASE AND WRITE TO UNDERLYING DATABASE 
+    b. flask automation
+        AUTOMATE MULTIPLE SERVER DEPLOYMENT, TESTING
+
+5. Contact protocol and implementation
+    YE KAISE HOGA -> MSGS COMMUNICATION PROTOCOL, KAB KON KISKO KAISE (KAISE - MSGS ME) DATA BHEJEGA 
+
+6. Connect with website
+    a. make all forms 
+
+
+Important Kaam
+twoPSet is not working as required -> isko sahi karna hai
+lww check karna hai

@@ -6,7 +6,10 @@ import datetime
 import pymongo
 from discs.data.underlying.users import User
 from discs.data.underlying.posts import Post
+
 from discs.settings import connect_with_database
+
+
 
 @connect_with_database
 def check_user(name):
@@ -23,6 +26,21 @@ def check_post(post_id):
     return True
 
 
+def add_user_by_object(user):
+    if user.id is not None:
+        if check_user(user.username) == False:
+            new_user = User()
+            new_user.id = user.id
+            new_user.name = user.name
+            new_user.username = user.username
+            new_user.nationality = user.nationality
+            new_user.age = user.age
+            new_user.save()
+    else:
+        return None
+
+
+
 @connect_with_database
 def add_user(name='Sukhiya', username='soku', nationality='Indian', age=20, **kwargs):
     """
@@ -35,6 +53,9 @@ def add_user(name='Sukhiya', username='soku', nationality='Indian', age=20, **kw
     Returns:
     user_id
     """
+    if check_user(username):
+        return None
+
     user = User()
     user.name = name
     user.username = username
@@ -42,6 +63,8 @@ def add_user(name='Sukhiya', username='soku', nationality='Indian', age=20, **kw
     user.age = age
     user.save()
     user_id = user.id
+
+
     return user_id
 
 @connect_with_database
@@ -162,7 +185,7 @@ def add_post(author='aush', creation_time=datetime.datetime.now, content='This i
         user.posts.append(post_id)
         user.save()
         return post_id
-    return "User does not exist"
+    return None
 
 @connect_with_database
 def change_post_content(post_id, content, **kwargs):
@@ -237,6 +260,8 @@ def deletePost(post_id, **kwargs):
         post.delete()
         return True
     return False
+
+
 
 if __name__ == "__main__":
     from discs.populate import get_fake_user, get_fake_post

@@ -32,14 +32,7 @@ def check_users():
 @connect_with_middleware_database
 def update_user(user, **kwargs):
     """
-    Args:
-    user={
-        id:
-        username:
-        fullname: 
-        ...
-    }
-
+    Function to add user update (i.e. addition of user to middleware database) 
     """
     check_users_updates()   # checks whether any user exists in that collection
     user_updates=Users_update.objects().first()
@@ -76,7 +69,7 @@ def update_user_fullname(username, fullname, **kwargs):
     user_fullname_updates.save()
 
 @connect_with_middleware_database
-def update_post_content(username, nationality, **kwargs):
+def update_user_nationality(username, nationality, **kwargs):
     """
     Args:
     
@@ -122,7 +115,12 @@ def update_user_age(username, age, **kwargs):
     user_age_updates.save()
 
 @connect_with_middleware_database
-def update_user_followers(username, followers, **kwargs):
+def update_user_followers(username, follower_name, **kwargs):
+    """
+    user_name : this user who is being followed
+    follower_name : username of the person who is clicking the follow button to follow the user with username in first argument
+    """
+
     user_followers_updates = Followers_update.objects(user_name=username).first()
     if user_followers_updates is None:
         user_followers_updates_twopset = TwoPSet()
@@ -135,9 +133,34 @@ def update_user_followers(username, followers, **kwargs):
     user_followers_updates_twopset = TwoPSet()
     user_followers_updates_twopset.__dict__ = user_followers_updates_twopset_dict
 
-    user_followers_updates_twopset.add(followers)
+    user_followers_updates_twopset.add(follower_name)
     user_followers_updates.update = json.dumps(user_followers_updates_twopset.__dict__)
     user_followers_updates.save()
+
+
+@connect_with_middleware_database
+def remove_user_follower(username, follower_name, **kwargs):
+    """
+    user_name : this user is clicking the unfollow button to follow the user with username in second argument
+    follower_name : username of the person to be unfollowed   
+    """
+
+    user_followers_updates = Followers_update.objects(user_name=username).first()
+    if user_followers_updates is None:
+        user_followers_updates_twopset = TwoPSet()
+        user_followers_updates = Followers_update()
+        user_followers_updates.user_name = username
+        user_followers_updates.update = json.dumps(user_followers_updates_twopset.__dict__)
+        # user_followers_updates.save()
+
+    user_followers_updates_twopset_dict = json.loads(user_followers_updates.update)
+    user_followers_updates_twopset = TwoPSet()
+    user_followers_updates_twopset.__dict__ = user_followers_updates_twopset_dict
+
+    user_followers_updates_twopset.remove(follower_name)
+    user_followers_updates.update = json.dumps(user_followers_updates_twopset.__dict__)
+    user_followers_updates.save()
+
 
 @connect_with_middleware_database
 def add_post(username, post, **kwargs):

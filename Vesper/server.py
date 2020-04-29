@@ -3,6 +3,7 @@ from node import FOLLOWER, LEADER
 from flask import Flask, request, jsonify
 import sys
 import logging
+import json, os, signal
 
 app = Flask(__name__)
 
@@ -58,6 +59,12 @@ def heartbeat():
     # return anyway, if nothing received by leader, we are dead
     message = {"term": term, "commitIdx": commitIdx}
     return jsonify(message)
+
+@app.route('/stopServer', methods=['GET'])
+def stopServer():
+    os.kill(os.getpid(), signal.SIGINT)
+    return jsonify({ "success": True, "message": "Server is shutting down..." })
+
 
 
 # disable flask logging

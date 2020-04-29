@@ -2,10 +2,9 @@ from gset import GSet
 
 
 class TwoPSet:
-    def __init__(self, id):
-        self.A = GSet(id)
-        self.R = GSet(id)
-        self.id = id
+    def __init__(self):
+        self.A = GSet()
+        self.R = GSet()
 
     def add(self, elem):
         self.A.add(elem)
@@ -37,3 +36,21 @@ class TwoPSet:
         twopset = TwoPSet()
         twopset.__dict__ = dict_input
         return twopset
+
+
+
+if __name__ == "__main__":
+    a = TwoPSet()
+    a.add(2)
+    a.add(3)
+    a.add(4)
+    a.remove(3)
+    a.add(4)
+    a.add(3)
+    a.remove(3)
+    a.add(3)
+    # a.remove(4)
+    # a.add(4)
+    print(a.query(3))
+    a.display()
+    # print(a.query(4))
