@@ -27,14 +27,15 @@ def connect_with_database(orig_func):
 def connect_with_middleware_database(orig_func):
     
     def wrapper(*args, **kwargs):
-        if 'dbName' in kwargs:
+        if (DEBUG==True) and 'dbName' in kwargs:
             dbName = kwargs.get('dbName')
-            mongoengine.register_connection(alias='middle', name=dbName)
-            results = orig_func(*args, **kwargs)
-            mongoengine.disconnect(alias='middle')
-            return results
-        else:
-            return orig_func(*args, **kwargs)
+            if dbName is not None:
+                mongoengine.register_connection(alias='middle', name=dbName)
+                results = orig_func(*args, **kwargs)
+                mongoengine.disconnect(alias='middle')
+                return results
+        
+        return orig_func(*args, **kwargs)
     
     return wrapper
 

@@ -13,9 +13,9 @@ from discs.data.middleware.followers_update import Followers_update
 from discs.data.middleware.posts_updates import Posts_update
 from discs.data.middleware.likedposts_updates import LikedPosts_update
 from discs.data.middleware.post_content_updates import Post_content_update
-from discs.crdt.CRDT.src.gset import GSet
-from discs.crdt.CRDT.src.lww import LWWElementSet
-from discs.crdt.CRDT.src.twopset import TwoPSet
+from crdt.CRDT.src.gset import GSet
+from crdt.CRDT.src.lww import LWWElementSet
+from crdt.CRDT.src.twopset import TwoPSet
 
 # from discs.data.underlying.posts import Post
 from discs.settings import connect_with_middleware_database
@@ -34,14 +34,58 @@ def update_user(user, **kwargs):
     """
     Function to add user update (i.e. addition of user to middleware database) 
     """
-    check_users_updates()   # checks whether any user exists in that collection
+    check_users()   # checks whether any user exists in that collection
     user_updates=Users_update.objects().first()
     
+    # user_updates_GSet_dict = json.loads(user_updates.users)
     user_updates_GSet_dict = json.loads(user_updates.users)
     user_updates_GSet = GSet()
     user_updates_GSet.__dict__ = user_updates_GSet_dict
 
-    user_updates_GSet.add(user)
+    user_updates_GSet.add(user.to_json())         
+    
+    # ------------------------------------------------------
+
+    
+    # from discs.services.underlying import databaseRead as underlyingDatabaseRead
+    # from discs.data.underlying import users as udbUsers
+    
+    # print('input_user : \n')
+    # underlyingDatabaseRead.print_user(user)
+    
+    # json_user = user.to_json()
+    # print('\nuser as json : \n')
+    # print(json_user)
+    # print('type of user as json : ', type(user.to_json()))
+    
+    # parsed_user = udbUsers.User.from_json(json_user, True)  
+    # print("\nParsed User : \n")
+    # underlyingDatabaseRead.print_user(parsed_user)
+    
+    ###
+    #####  GSet as a dict to json isko update field me store karte
+    #####  Gset me store karte string of User objects (i.e. users are in json using function  user_object_string = user_object.to_json())
+    #####
+    #####   user_updates_GSet = udbUsers.User.from_json(user_updates.users)
+    #####       for user_json in user_updates_GSet.payload:
+    #####           user_obj = udbUsers.User.from_json(user_json, created=True)
+    #####           underlyingDatabaseRead.print_user()
+    #####           
+    #####
+
+    # user_updates_GSet = udbUsers.User.from_json(user_updates.users)
+    
+    # for user_json in user_updates_GSet.payload:
+    #     user_obj = udbUsers.User.from_json(user_json, created=True)
+    #     underlyingDatabaseRead.print_user()
+    
+
+    # # print(past_users)
+    # underlyingDatabaseRead.print_users()
+
+
+    # ------------------------------------------------------
+        
     user_updates.users = json.dumps(user_updates_GSet.__dict__)
     user_updates.save()
 
@@ -252,3 +296,4 @@ def update_post_content(username, post_content, **kwargs):
     post_content_updates_twopset.add(post_content)
     post_content_updates.update = json.dumps(post_content_updates_twopset.__dict__)
     post_content_updates.save()
+

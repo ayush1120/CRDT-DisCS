@@ -66,11 +66,9 @@ def stopServer():
     return jsonify({ "success": True, "message": "Server is shutting down..." })
 
 
-
 # disable flask logging
 log = logging.getLogger('werkzeug')
 log.disabled = True
-
 
 
 

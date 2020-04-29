@@ -4,7 +4,7 @@ sys.path.append('../../../')
 import mongoengine
 import json
 
-from discs.data.middleware.user_update import User_update
+from discs.data.middleware.user_update import Users_update
 from discs.data.middleware.posts_updates import Posts_update
 from discs.data.middleware.age_update import Age_update
 from discs.data.middleware.post_content_updates import Post_content_update
@@ -16,9 +16,9 @@ from discs.data.middleware.followers_update import Followers_update
 
 def get_user_update_msg():
     msg = {
-        "type": 'User_update',
+        "type": 'Users_update',
         "data": [ 
-             {'users' : User_update.objects().first().users}
+             {'users' : Users_update.objects().first().users}
         ]
     }
     return json.dumps(msg)

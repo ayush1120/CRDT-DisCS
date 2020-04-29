@@ -1,4 +1,7 @@
-from gcounter import GCounter
+import sys
+sys.path.append('../../../')
+
+from crdt.CRDT.src.gcounter import GCounter
 
 
 class PNCounter:

@@ -1,4 +1,7 @@
-from gset import GSet
+import sys
+sys.path.append('../../../')
+
+from crdt.CRDT.src.gset import GSet
 
 
 class TwoPSet:
