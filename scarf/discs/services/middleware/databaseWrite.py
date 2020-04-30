@@ -14,7 +14,7 @@ from discs.data.middleware.posts_updates import Posts_update
 from discs.data.middleware.likedposts_updates import LikedPosts_update
 from discs.data.middleware.post_content_updates import Post_content_update
 from crdt.CRDT.src.gset import GSet
-from crdt.CRDT.src.lww import LWWElementSet
+from crdt.CRDT.src.lww import LWW
 from crdt.CRDT.src.twopset import TwoPSet
 
 # from discs.data.underlying.posts import Post
@@ -37,58 +37,16 @@ def update_user(user, **kwargs):
     check_users()   # checks whether any user exists in that collection
     user_updates=Users_update.objects().first()
     
-    # user_updates_GSet_dict = json.loads(user_updates.users)
     user_updates_GSet_dict = json.loads(user_updates.users)
     user_updates_GSet = GSet()
     user_updates_GSet.__dict__ = user_updates_GSet_dict
 
-    user_updates_GSet.add(user.to_json())         
-    
-    # ------------------------------------------------------
+    user_updates_GSet.add(user.to_json())  
 
-    
-    # from discs.services.underlying import databaseRead as underlyingDatabaseRead
-    # from discs.data.underlying import users as udbUsers
-    
-    # print('input_user : \n')
-    # underlyingDatabaseRead.print_user(user)
-    
-    # json_user = user.to_json()
-    # print('\nuser as json : \n')
-    # print(json_user)
-    # print('type of user as json : ', type(user.to_json()))
-    
-    # parsed_user = udbUsers.User.from_json(json_user, True)  
-    # print("\nParsed User : \n")
-    # underlyingDatabaseRead.print_user(parsed_user)
-    
-    ###
-    #####  GSet as a dict to json isko update field me store karte
-    #####  Gset me store karte string of User objects (i.e. users are in json using function  user_object_string = user_object.to_json())
-    #####
-    #####   user_updates_GSet = udbUsers.User.from_json(user_updates.users)
-    #####       for user_json in user_updates_GSet.payload:
-    #####           user_obj = udbUsers.User.from_json(user_json, created=True)
-    #####           underlyingDatabaseRead.print_user()
-    #####           
-    #####
-
-    # user_updates_GSet = udbUsers.User.from_json(user_updates.users)
-    
-    # for user_json in user_updates_GSet.payload:
-    #     user_obj = udbUsers.User.from_json(user_json, created=True)
-    #     underlyingDatabaseRead.print_user()
-    
-
-    # # print(past_users)
-    # underlyingDatabaseRead.print_users()
-
-
-    # ------------------------------------------------------
-        
     user_updates.users = json.dumps(user_updates_GSet.__dict__)
-    user_updates.save()
-
+    user_updates.save()       
+    
+    
 @connect_with_middleware_database
 def update_user_fullname(username, fullname, **kwargs):
     """
@@ -98,18 +56,19 @@ def update_user_fullname(username, fullname, **kwargs):
     """
     user_fullname_updates = Fullname_update.objects(user_name=username).first()
     if user_fullname_updates is None:
-        user_fullname_updates_lww = LWWElementSet()
+        user_fullname_updates_lww = LWW()
         user_fullname_updates = Fullname_update()
         user_fullname_updates.user_name = username
-        user_fullname_updates.update = json.dumps(user_fullname_updates_lww.__dict__)
-        # user_fullname_updates.save()
+        user_fullname_updates.update_value = json.dumps(user_fullname_updates_lww.__dict__)
 
-    user_fullname_updates_lww_dict = json.loads(user_fullname_updates.update)
-    user_fullname_updates_lww = LWWElementSet()
+    user_fullname_updates_lww_dict = json.loads(user_fullname_updates.update_value)
+    user_fullname_updates_lww = LWW()
     user_fullname_updates_lww.__dict__ = user_fullname_updates_lww_dict
 
     user_fullname_updates_lww.add(fullname)
-    user_fullname_updates.update = json.dumps(user_fullname_updates_lww.__dict__)
+    user_fullname_updates.update_value = json.dumps(user_fullname_updates_lww.__dict__)
+    # print(user_fullname_updates.update_value)
+    print(type(user_fullname_updates))
     user_fullname_updates.save()
 
 @connect_with_middleware_database
@@ -124,15 +83,15 @@ def update_user_nationality(username, nationality, **kwargs):
         user_nationality_updates_lww = LWWElementSet()
         user_nationality_updates = Nationality_update()
         user_nationality_updates.user_name = username
-        user_nationality_updates.update = json.dumps(user_nationality_updates_lww.__dict__)
+        user_nationality_updates.update_value = json.dumps(user_nationality_updates_lww.__dict__)
         # user_nationality_updates.save()
 
-    user_nationality_updates_lww_dict = json.loads(user_nationality_updates.update)
+    user_nationality_updates_lww_dict = json.loads(user_nationality_updates.update_value)
     user_nationality_updates_lww = LWWElementSet()
     user_nationality_updates_lww.__dict__ = user_nationality_updates_lww_dict
 
     user_nationality_updates_lww.add(nationality)
-    user_nationality_updates.update = json.dumps(user_nationality_updates_lww.__dict__)
+    user_nationality_updates.update_value = json.dumps(user_nationality_updates_lww.__dict__)
     user_nationality_updates.save()
 
 @connect_with_middleware_database
@@ -147,15 +106,15 @@ def update_user_age(username, age, **kwargs):
         user_age_updates_lww = LWWElementSet()
         user_age_updates = Age_update()
         user_age_updates.user_name = username
-        user_age_updates.update = json.dumps(user_age_updates_lww.__dict__)
+        user_age_updates.update_value = json.dumps(user_age_updates_lww.__dict__)
         # user_age_updates.save()
 
-    user_age_updates_lww_dict = json.loads(user_age_updates.update)
+    user_age_updates_lww_dict = json.loads(user_age_updates.update_value)
     user_age_updates_lww = LWWElementSet()
     user_age_updates_lww.__dict__ = user_age_updates_lww_dict
 
     user_age_updates_lww.add(age)
-    user_age_updates.update = json.dumps(user_age_updates_lww.__dict__)
+    user_age_updates.update_value = json.dumps(user_age_updates_lww.__dict__)
     user_age_updates.save()
 
 @connect_with_middleware_database
@@ -170,15 +129,14 @@ def update_user_followers(username, follower_name, **kwargs):
         user_followers_updates_twopset = TwoPSet()
         user_followers_updates = Followers_update()
         user_followers_updates.user_name = username
-        user_followers_updates.update = json.dumps(user_followers_updates_twopset.__dict__)
+        user_followers_updates.update_value = json.dumps(user_followers_updates_twopset.__dict__)
         # user_followers_updates.save()
 
-    user_followers_updates_twopset_dict = json.loads(user_followers_updates.update)
-    user_followers_updates_twopset = TwoPSet()
-    user_followers_updates_twopset.__dict__ = user_followers_updates_twopset_dict
+    # Loading data in TwoPSet
+    user_followers_updates_twopset = TwoPSet().loadFromDict(json.loads(user_followers_updates.update_value))
 
     user_followers_updates_twopset.add(follower_name)
-    user_followers_updates.update = json.dumps(user_followers_updates_twopset.__dict__)
+    user_followers_updates.update_value = json.dumps(user_followers_updates_twopset.__dict__)
     user_followers_updates.save()
 
 
@@ -194,34 +152,45 @@ def remove_user_follower(username, follower_name, **kwargs):
         user_followers_updates_twopset = TwoPSet()
         user_followers_updates = Followers_update()
         user_followers_updates.user_name = username
-        user_followers_updates.update = json.dumps(user_followers_updates_twopset.__dict__)
+        user_followers_updates.update_value = json.dumps(user_followers_updates_twopset.__dict__)
         # user_followers_updates.save()
 
-    user_followers_updates_twopset_dict = json.loads(user_followers_updates.update)
-    user_followers_updates_twopset = TwoPSet()
-    user_followers_updates_twopset.__dict__ = user_followers_updates_twopset_dict
+    
+    # Loading data in TwoPSet
+    user_followers_updates_twopset = TwoPSet().loadFromDict(json.loads(user_followers_updates.update_value))
+
 
     user_followers_updates_twopset.remove(follower_name)
-    user_followers_updates.update = json.dumps(user_followers_updates_twopset.__dict__)
+    user_followers_updates.update_value = json.dumps(user_followers_updates_twopset.toDict())
     user_followers_updates.save()
 
 
 @connect_with_middleware_database
 def add_post(username, post, **kwargs):
-    post_updates = Posts_update.objects(user_name=username).first()
+    post_updates = Posts_update.objects(username=username).first()
     if post_updates is None:
         post_updates_twopset = TwoPSet()
         post_updates = Posts_update()
         post_updates.user_name = username
-        post_updates.update = json.dumps(post_updates_twopset.__dict__)
-        # post_updates.save()
+        post_updates.update_value = json.dumps(post_updates_twopset.toDict())
+        # print(type(post_updates.update_value),post_updates.update_value)
+        # post_updates_twopset = TwoPSet().loadFromDict(post_updates.update_value)
+        post_updates.save()
 
-    post_updates_twopset_dict = json.loads(post_updates.update)
-    post_updates_twopset = TwoPSet()
-    post_updates_twopset.__dict__ = post_updates_twopset_dict
+    # post_updates_twopset_dict = json.loads(post_updates.update_value)
+    # print(post_updates_twopset_dict)
+    # post_updates_twopset = TwoPSet()
 
-    post_updates_twopset.add(post)
-    post_updates.update = json.dumps(post_updates_twopset.__dict__)
+    # Loading data in TwoPSet
+    post_updates_twopset = TwoPSet().loadFromDict(json.loads(post_updates.update_value))
+    
+    # print(type(post_updates_twopset),post_updates_twopset)
+    # post_updates_twopset_dict
+
+    post_updates_twopset.add(post.to_json())
+    post_updates_twopset_dict = post_updates_twopset.toDict()
+
+    post_updates.update_value = json.dumps(post_updates_twopset_dict)
     post_updates.save()
 
 @connect_with_middleware_database
@@ -231,15 +200,14 @@ def remove_post(username, post, **kwargs):
         post_updates_twopset = TwoPSet()
         post_updates = Posts_update()
         post_updates.user_name = username
-        post_updates.update = json.dumps(post_updates_twopset.__dict__)
+        post_updates.update_value = json.dumps(post_updates_twopset.toDict())
         # post_updates.save()
 
-    post_updates_twopset_dict = json.loads(post_updates.update)
-    post_updates_twopset = TwoPSet()
-    post_updates_twopset.__dict__ = post_updates_twopset_dict
+    # Loading data in TwoPSet
+    post_updates_twopset = TwoPSet().loadFromDict(json.loads(post_updates.update_value))
 
     post_updates_twopset.remove(post)
-    post_updates.update = json.dumps(post_updates_twopset.__dict__)
+    post_updates.update_value = json.dumps(post_updates_twopset.toDict())
     post_updates.save()
 
 
@@ -250,15 +218,14 @@ def add_liked_post(username, liked_post, **kwargs):
         liked_post_updates_twopset = TwoPSet()
         liked_post_updates = LikedPosts_update()
         liked_post_updates.user_name = username
-        liked_post_updates.update = json.dumps(liked_post_updates_twopset.__dict__)
+        liked_post_updates.update_value = json.dumps(liked_post_updates_twopset.toDict())
         # liked_post_updates.save()
 
-    liked_post_updates_twopset_dict = json.loads(liked_post_updates.update)
-    liked_post_updates_twopset = TwoPSet()
-    liked_post_updates_twopset.__dict__ = liked_post_updates_twopset_dict
+    # Loading data in TwoPSet
+    liked_post_updates_twopset = TwoPSet().loadFromDict(json.loads(liked_post_updates.update_value))
 
     liked_post_updates_twopset.add(liked_post)
-    liked_post_updates.update = json.dumps(liked_post_updates_twopset.__dict__)
+    liked_post_updates.update_value = json.dumps(liked_post_updates_twopset.toDict())
     liked_post_updates.save()
 
 @connect_with_middleware_database
@@ -268,32 +235,38 @@ def remove_liked_post(username, liked_post, **kwargs):
         liked_post_updates_twopset = TwoPSet()
         liked_post_updates = LikedPosts_update()
         liked_post_updates.user_name = username
-        liked_post_updates.update = json.dumps(liked_post_updates_twopset.__dict__)
+        liked_post_updates.update_value = json.dumps(liked_post_updates_twopset.toDict())
         # liked_post_updates.save()
 
-    liked_post_updates_twopset_dict = json.loads(liked_post_updates.update)
-    liked_post_updates_twopset = TwoPSet()
-    liked_post_updates_twopset.__dict__ = liked_post_updates_twopset_dict
+    # Loading data in TwoPSet
+    liked_post_updates_twopset = TwoPSet().loadFromDict(json.loads(liked_post_updates.update_value))
+
 
     liked_post_updates_twopset.remove(liked_post)
-    liked_post_updates.update = json.dumps(liked_post_updates_twopset.__dict__)
+    liked_post_updates.update_value = json.dumps(liked_post_updates_twopset.toDict())
     liked_post_updates.save()
 
 @connect_with_middleware_database
-def update_post_content(username, post_content, **kwargs):
+def update_post_content(username, post_content, **kwargs):  # Change to LWW
+    # 
+    # Change to LWW
+    #
+
+
     post_content_updates = Post_content_update.objects(user_name=username).first()
     if post_content_updates is None:
         post_content_updates_twopset = TwoPSet()
         post_content_updates = Post_content_update()
         post_content_updates.user_name = username
-        post_content_updates.update = json.dumps(post_content_updates_twopset.__dict__)
+        post_content_updates.update_value = json.dumps(post_content_updates_twopset.toDict())
         # post_content_updates.save()
 
-    post_content_updates_twopset_dict = json.loads(post_content_updates.update)
-    post_content_updates_twopset = TwoPSet()
-    post_content_updates_twopset.__dict__ = post_content_updates_twopset_dict
+    
+    # Loading data in TwoPSet
+    post_content_updates_twopset = TwoPSet().loadFromDict(json.loads(post_content_updates.update_value))
+
 
     post_content_updates_twopset.add(post_content)
-    post_content_updates.update = json.dumps(post_content_updates_twopset.__dict__)
+    post_content_updates.update_value = json.dumps(post_content_updates_twopset.toDict())
     post_content_updates.save()
 

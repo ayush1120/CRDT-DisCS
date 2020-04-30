@@ -108,9 +108,9 @@ def add_post(author, creation_time, content, likes=0, dbIndex=None, **kwargs):
     dbName = underlyingDatabaseName(dbIndex)
     middlewareDBName = middlewareDatabaseName(dbIndex)
 
-    updated = underlyingDatabaseWrite.add_post(author, creation_time, content, likes, dbName=dbName)
+    post_id = underlyingDatabaseWrite.add_post(author, creation_time, content, likes, dbName=dbName)
     
-    if CRDT_UPDATE and updated is not None:
+    if CRDT_UPDATE and post_id is not None:
         post = underlyingDatabaseRead.get_post_by_id(post_id, dbName=dbName)
         middlewareDatabaseWrite.add_post(username=author, post=post, dbName=middlewareDBName)
 
@@ -161,6 +161,13 @@ if __name__ == "__main__":
     from discs.data.underlying.users import User 
     from discs.data.underlying.posts import Post
     from discs.manageDatabases import deleteDatabase
+    from discs.data.middleware.users_update import Users_update 
+    from discs.data.middleware.fullname_update import Fullname_update
+
+    from crdt.CRDT.src.gset import GSet
+    from crdt.CRDT.src.twopset import  TwoPSet
+    from crdt.CRDT.src.lww import LWW
+
     import random
     import mongoengine
     import json
@@ -173,7 +180,7 @@ if __name__ == "__main__":
     
 
     NUM_FAKE_USERS = 1
-    NUM_FAKE_POSTS = 1
+    NUM_FAKE_POSTS = 2
 
     dbName = None
     dbName_middleware = None
@@ -186,43 +193,373 @@ if __name__ == "__main__":
             age=user.age)
 
     users = readUsers(dbName=dbName)
-    print_users(users)
+    # print_users(users)
+    
     users_update = middlewareDatabaseRead.get_user_updates(dbName=dbName_middleware)
-    print(type(users_update))
-    print(users_update.users)
-    new_user = User()
-    user_read = json.loads(users_update.users)["payload"][0]
-    new_user.__dict__ = user_read
-    print_user(new_user)
+    users_Gset = GSet()
+    users_Gset.__dict__ = json.loads(users_update.users)
+    users_from_Gset = json.loads(users_update.users)['payload']
 
-    # post_ids = []
-    # for _ in range(NUM_FAKE_POSTS):
-    #     post = get_fake_post()
-    #     author_index = random.randint(0,len(users)-1)
-    #     post.author = users[0].username
-    #     post_id = add_post(
-    #         author=post.author,
-    #         creation_time=post.creation_time,
-    #         content=post.content,
-    #         dbName=dbName
-    #     )
-    #     post_ids.append(post_id)
-
+    users_loaded = []
+    last_user_name = ""
+    for element in users_from_Gset:
+        user = User.from_json(element, created=True)
+        users_loaded.append(user)
+        last_user_name = user.username
     
-    # myPostID = post_ids[0]
+    update_user_name(last_user_name, "Rakesh")
 
+    user_fullname_updates = middlewareDatabaseRead.get_fullname_updates_by_username(last_user_name)
+    print(last_user_name, user_fullname_updates.update_value)
+
+    users = readUsers(dbName=dbName)
+    print_users(users)
+
+    update_user_age(last_user_name, 101)
+    
+    user_age_updates = middlewareDatabaseRead.get_age_updates_by_username(username)
+    print(last_user_name, user_age_updates)
+
+    users = readUsers(dbName=dbName)
+    print_users(users)
+
+    for _ in range(NUM_FAKE_POSTS):
+        post = get_fake_post()
+        add_post(author=last_user_name, 
+            creation_time=post.creation_time, 
+            content=post.content, 
+            likes=post.likes)
+
+    posts = readPosts(dbName=dbName)
+    # print_posts(posts) 
+
+    # print("\nTransition\n")
+
+
+    posts_updates = middlewareDatabaseRead.get_posts_updates(dbName=dbName_middleware)
+
+    all_posts_added = [] 
+    all_posts_removed = []
+
+    print('Num Objects in post_update : ', len(posts_updates))
+
+    for post_update_object in posts_updates:
+
+        update_string = post_update_object.update_value
+
+        updates_TwoPSet = TwoPSet().loadFromDict(json.loads(update_string))
+
+        added_posts_jsons = updates_TwoPSet.addedValues()
+        for added_post_json in added_posts_jsons:
+            added_post = Post.from_json(added_post_json) 
+            all_posts_added.append(added_post)
+
+        removed_posts_jsons = updates_TwoPSet.removedValues()
+        for removed_post_json in removed_posts_jsons:
+            removed_post = Post.from_json(removed_post_json)
+            all_posts_removed.append(removed_post)
+
+
+    # print('-----------------------------Added Posts-------------------------------')
+    # print("Num of all_posts_added : ", len(all_posts_added))
+    # print_posts(all_posts_added)
+    
+    # print('-----------------------------Removed Posts-------------------------------')
+    # print_posts(all_posts_removed)
+    # all_posts_added = [] 
+    # all_posts_removed = []
+
+
+    deleteDatabase(dbName='CRDT-DisCS_Test_UDB')
+    deleteDatabase(dbName='CRDT-DisCS_Test_Middle_UDB')    #     add_post(author=last_user_name, 
+        #     add_post(author=last_user_name, 
+    #         creation_time=post.creation_time, 
+    #         content=post.content, 
+    #         likes=post.likes)
     # posts = readPosts(dbName=dbName)
     # print_posts(posts)
+    # print("Hi")
 
-    # print(f'--------Deleting post {myPostID}---------')
 
-    # deletePost(post_id=myPostID, dbName=dbName)
-
+    deleteDatabase(dbName='CRDT-DisCS_Test_UDB')
+    deleteDatabase(dbName='CRDT-DisCS_Test_Middle_UDB')    #     add_post(author=last_user_name, 
+    #         creation_time=post.creation_time, 
+    #         content=post.content, 
+    #         likes=post.likes)
     # posts = readPosts(dbName=dbName)
     # print_posts(posts)
+    # print("Hi")
 
 
-    # # print_users(users)
-    
+    deleteDatabase(dbName='CRDT-DisCS_Test_UDB')
+    deleteDatabase(dbName='CRDT-DisCS_Test_Middle_UDB')    #     add_post(author=last_user_name, 
+    #         creation_time=post.creation_time, 
+    #         content=post.content, 
+    #         likes=post.likes)
+    # posts = readPosts(dbName=dbName)
+    # print_posts(posts)
+    # print("Hi")
+
+
+    deleteDatabase(dbName='CRDT-DisCS_Test_UDB')
+    deleteDatabase(dbName='CRDT-DisCS_Test_Middle_UDB')    #     add_post(author=last_user_name, 
+    #         creation_time=post.creation_time, 
+    #         content=post.content, 
+    #         likes=post.likes)
+    # posts = readPosts(dbName=dbName)
+    # print_posts(posts)
+    # print("Hi")
+
+
+    deleteDatabase(dbName='CRDT-DisCS_Test_UDB')
+    deleteDatabase(dbName='CRDT-DisCS_Test_Middle_UDB')    #     add_post(author=last_user_name, 
+    #         creation_time=post.creation_time, 
+    #         content=post.content, 
+    #         likes=post.likes)
+    # posts = readPosts(dbName=dbName)
+    # print_posts(posts)
+    # print("Hi")
+
+
+    deleteDatabase(dbName='CRDT-DisCS_Test_UDB')
+    deleteDatabase(dbName='CRDT-DisCS_Test_Middle_UDB')    #     add_post(author=last_user_name, 
+    #         creation_time=post.creation_time, 
+    #         content=post.content, 
+    #         likes=post.likes)
+    # posts = readPosts(dbName=dbName)
+    # print_posts(posts)
+    # print("Hi")
+
+
+    deleteDatabase(dbName='CRDT-DisCS_Test_UDB')
+    deleteDatabase(dbName='CRDT-DisCS_Test_Middle_UDB')    #     add_post(author=last_user_name, 
+    #         creation_time=post.creation_time, 
+    #         content=post.content, 
+    #         likes=post.likes)
+    # posts = readPosts(dbName=dbName)
+    # print_posts(posts)
+    # print("Hi")
+
+
+    deleteDatabase(dbName='CRDT-DisCS_Test_UDB')
+    deleteDatabase(dbName='CRDT-DisCS_Test_Middle_UDB')    #     add_post(author=last_user_name, 
+    #         creation_time=post.creation_time, 
+    #         content=post.content, 
+    #         likes=post.likes)
+    # posts = readPosts(dbName=dbName)
+    # print_posts(posts)
+    # print("Hi")
+
+
+    deleteDatabase(dbName='CRDT-DisCS_Test_UDB')
+    deleteDatabase(dbName='CRDT-DisCS_Test_Middle_UDB')    #     add_post(author=last_user_name, 
+    #         creation_time=post.creation_time, 
+    #         content=post.content, 
+    #         likes=post.likes)
+    # posts = readPosts(dbName=dbName)
+    # print_posts(posts)
+    # print("Hi")
+
+
+    deleteDatabase(dbName='CRDT-DisCS_Test_UDB')
+    deleteDatabase(dbName='CRDT-DisCS_Test_Middle_UDB')    #     add_post(author=last_user_name, 
+    #         creation_time=post.creation_time, 
+    #         content=post.content, 
+    #         likes=post.likes)
+    # posts = readPosts(dbName=dbName)
+    # print_posts(posts)
+    # print("Hi")
+
+
+    deleteDatabase(dbName='CRDT-DisCS_Test_UDB')
+    deleteDatabase(dbName='CRDT-DisCS_Test_Middle_UDB')    #     add_post(author=last_user_name, 
+    #         creation_time=post.creation_time, 
+    #         content=post.content, 
+    #         likes=post.likes)
+    # posts = readPosts(dbName=dbName)
+    # print_posts(posts)
+    # print("Hi")
+
+
+    deleteDatabase(dbName='CRDT-DisCS_Test_UDB')
+    deleteDatabase(dbName='CRDT-DisCS_Test_Middle_UDB')    #     add_post(author=last_user_name, 
+    #         creation_time=post.creation_time, 
+    #         content=post.content, 
+    #         likes=post.likes)
+    # posts = readPosts(dbName=dbName)
+    # print_posts(posts)
+    # print("Hi")
+
+
+    deleteDatabase(dbName='CRDT-DisCS_Test_UDB')
+    deleteDatabase(dbName='CRDT-DisCS_Test_Middle_UDB')    #     add_post(author=last_user_name, 
+    #         creation_time=post.creation_time, 
+    #         content=post.content, 
+    #         likes=post.likes)
+    # posts = readPosts(dbName=dbName)
+    # print_posts(posts)
+    # print("Hi")
+
+
+    deleteDatabase(dbName='CRDT-DisCS_Test_UDB')
+    deleteDatabase(dbName='CRDT-DisCS_Test_Middle_UDB')    #     add_post(author=last_user_name, 
+    #         creation_time=post.creation_time, 
+    #         content=post.content, 
+    #         likes=post.likes)
+    # posts = readPosts(dbName=dbName)
+    # print_posts(posts)
+    # print("Hi")
+
+
+    deleteDatabase(dbName='CRDT-DisCS_Test_UDB')
+    deleteDatabase(dbName='CRDT-DisCS_Test_Middle_UDB')    #     add_post(author=last_user_name, 
+    #         creation_time=post.creation_time, 
+    #         content=post.content, 
+    #         likes=post.likes)
+    # posts = readPosts(dbName=dbName)
+    # print_posts(posts)
+    # print("Hi")
+
+
+    deleteDatabase(dbName='CRDT-DisCS_Test_UDB')
+    deleteDatabase(dbName='CRDT-DisCS_Test_Middle_UDB')    #     add_post(author=last_user_name, 
+    #         creation_time=post.creation_time, 
+    #         content=post.content, 
+    #         likes=post.likes)
+    # posts = readPosts(dbName=dbName)
+    # print_posts(posts)
+    # print("Hi")
+
+
+    deleteDatabase(dbName='CRDT-DisCS_Test_UDB')
+    deleteDatabase(dbName='CRDT-DisCS_Test_Middle_UDB')    #     add_post(author=last_user_name, 
+    #         creation_time=post.creation_time, 
+    #         content=post.content, 
+    #         likes=post.likes)
+    # posts = readPosts(dbName=dbName)
+    # print_posts(posts)
+    # print("Hi")
+
+
+    deleteDatabase(dbName='CRDT-DisCS_Test_UDB')
+    deleteDatabase(dbName='CRDT-DisCS_Test_Middle_UDB')    #     add_post(author=last_user_name, 
+    #         creation_time=post.creation_time, 
+    #         content=post.content, 
+    #         likes=post.likes)
+    # posts = readPosts(dbName=dbName)
+    # print_posts(posts)
+    # print("Hi")
+
+
+    deleteDatabase(dbName='CRDT-DisCS_Test_UDB')
+    deleteDatabase(dbName='CRDT-DisCS_Test_Middle_UDB')    #     add_post(author=last_user_name, 
+    #         creation_time=post.creation_time, 
+    #         content=post.content, 
+    #         likes=post.likes)
+    # posts = readPosts(dbName=dbName)
+    # print_posts(posts)
+    # print("Hi")
+
+
+    deleteDatabase(dbName='CRDT-DisCS_Test_UDB')
+    deleteDatabase(dbName='CRDT-DisCS_Test_Middle_UDB')    #     add_post(author=last_user_name, 
+    #         creation_time=post.creation_time, 
+    #         content=post.content, 
+    #         likes=post.likes)
+    # posts = readPosts(dbName=dbName)
+    # print_posts(posts)
+    # print("Hi")
+
+
+    deleteDatabase(dbName='CRDT-DisCS_Test_UDB')
+    deleteDatabase(dbName='CRDT-DisCS_Test_Middle_UDB')    #     add_post(author=last_user_name, 
+    #         creation_time=post.creation_time, 
+    #         content=post.content, 
+    #         likes=post.likes)
+    # posts = readPosts(dbName=dbName)
+    # print_posts(posts)
+    # print("Hi")
+
+
+    deleteDatabase(dbName='CRDT-DisCS_Test_UDB')
+    deleteDatabase(dbName='CRDT-DisCS_Test_Middle_UDB')    #     add_post(author=last_user_name, 
+    #         creation_time=post.creation_time, 
+    #         content=post.content, 
+    #         likes=post.likes)
+    # posts = readPosts(dbName=dbName)
+    # print_posts(posts)
+    # print("Hi")
+
+
+    deleteDatabase(dbName='CRDT-DisCS_Test_UDB')
+    deleteDatabase(dbName='CRDT-DisCS_Test_Middle_UDB')    #     add_post(author=last_user_name, 
+    #         creation_time=post.creation_time, 
+    #         content=post.content, 
+    #         likes=post.likes)
+    # posts = readPosts(dbName=dbName)
+    # print_posts(posts)
+    # print("Hi")
+
+
+    deleteDatabase(dbName='CRDT-DisCS_Test_UDB')
+    deleteDatabase(dbName='CRDT-DisCS_Test_Middle_UDB')    #     add_post(author=last_user_name, 
+    #         creation_time=post.creation_time, 
+    #         content=post.content, 
+    #         likes=post.likes)
+    # posts = readPosts(dbName=dbName)
+    # print_posts(posts)
+    # print("Hi")
+
+
+    deleteDatabase(dbName='CRDT-DisCS_Test_UDB')
+    deleteDatabase(dbName='CRDT-DisCS_Test_Middle_UDB')    #     add_post(author=last_user_name, 
+    #         creation_time=post.creation_time, 
+    #         content=post.content, 
+    #         likes=post.likes)
+    # posts = readPosts(dbName=dbName)
+    # print_posts(posts)
+    # print("Hi")
+
+
+    deleteDatabase(dbName='CRDT-DisCS_Test_UDB')
+    deleteDatabase(dbName='CRDT-DisCS_Test_Middle_UDB')    #     add_post(author=last_user_name, 
+    #         creation_time=post.creation_time, 
+    #         content=post.content, 
+    #         likes=post.likes)
+    # posts = readPosts(dbName=dbName)
+    # print_posts(posts)
+    # print("Hi")
+
+
+    deleteDatabase(dbName='CRDT-DisCS_Test_UDB')
+    deleteDatabase(dbName='CRDT-DisCS_Test_Middle_UDB')    #     add_post(author=last_user_name, 
+    #         creation_time=post.creation_time, 
+    #         content=post.content, 
+    #         likes=post.likes)
+    # posts = readPosts(dbName=dbName)
+    # print_posts(posts)
+    # print("Hi")
+
+
+    deleteDatabase(dbName='CRDT-DisCS_Test_UDB')
+    deleteDatabase(dbName='CRDT-DisCS_Test_Middle_UDB')    #     add_post(author=last_user_name, 
+    #         creation_time=post.creation_time, 
+    #         content=post.content, 
+    #         likes=post.likes)
+    # posts = readPosts(dbName=dbName)
+    # print_posts(posts)
+    # print("Hi")
+
+
+    deleteDatabase(dbName='CRDT-DisCS_Test_UDB')
+    deleteDatabase(dbName='CRDT-DisCS_Test_Middle_UDB')    #     add_post(author=last_user_name, 
+    #         creation_time=post.creation_time, 
+    #         content=post.content, 
+    #         likes=post.likes)
+    # posts = readPosts(dbName=dbName)
+    # print_posts(posts)
+    # print("Hi")
+
+
     deleteDatabase(dbName='CRDT-DisCS_Test_UDB')
     deleteDatabase(dbName='CRDT-DisCS_Test_Middle_UDB')

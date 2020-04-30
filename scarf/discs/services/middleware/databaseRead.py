@@ -20,20 +20,20 @@ def get_user_updates(**kwargs):
     else:
         return users_updates[0]
 
-        
+
 @connect_with_middleware_database
 def get_age_updates(**kwargs):
     age_updates = Age_update.objects()
-    if len(age_updates == 0):
+    if len(age_updates) == 0:
         return None
     else:
         return age_updates
 
 
 @connect_with_middleware_database
-def get_age_updates_by_user(username, **kwargs):
+def get_age_updates_by_username(username, **kwargs):
     age_updates = Age_update.objects(user_name=username)
-    if len(age_updates==0):
+    if len(age_updates)==0:
         return None
     else:
         return age_updates
@@ -41,7 +41,7 @@ def get_age_updates_by_user(username, **kwargs):
 @connect_with_middleware_database
 def get_posts_updates(**kwargs):
     post_updates = Posts_update.objects()
-    if len(post_updates == 0):
+    if len(post_updates) == 0:
         return None
     else:
         return post_updates
@@ -50,7 +50,7 @@ def get_posts_updates(**kwargs):
 @connect_with_middleware_database
 def get_posts_updates_by_user(username, **kwargs):
     post_updates = Posts_update.objects(username=username)
-    if len(post_updates == 0):
+    if len(post_updates) == 0:
         return None
     else:
         return post_updates
@@ -58,16 +58,16 @@ def get_posts_updates_by_user(username, **kwargs):
 @connect_with_middleware_database
 def get_nationality_updates(**kwargs):
     nationality_updates = Nationality_update.objects()
-    if len(nationality_updates == 0):
+    if len(nationality_updates) == 0:
         return None
     else:
         return nationality_updates
 
 
 @connect_with_middleware_database
-def get_nationality_updates_by_User(username, **kwargs):
+def get_nationality_updates_by_username(username, **kwargs):
     nationality_updates = Nationality_update.objects(user_name=username)
-    if len(nationality_updates == 0):
+    if len(nationality_updates) == 0:
         return None
     else:
         return nationality_updates
@@ -76,7 +76,7 @@ def get_nationality_updates_by_User(username, **kwargs):
 @connect_with_middleware_database
 def get_post_content_updates(**kwargs):
     post_content_updates = Post_content_update.objects()
-    if len(post_content_updates == 0):
+    if len(post_content_updates) == 0:
         return None
     else:
         return post_content_updates
@@ -85,7 +85,7 @@ def get_post_content_updates(**kwargs):
 @connect_with_middleware_database
 def get_post_content_updates_by_post_id(post_id, **kwargs):
     post_content_updates = Post_content_update.objects(post_id=post_id)
-    if len(post_content_updates == 0):
+    if len(post_content_updates) == 0:
         return None
     else:
         return post_content_updates    
@@ -94,7 +94,8 @@ def get_post_content_updates_by_post_id(post_id, **kwargs):
 @connect_with_middleware_database
 def get_fullname_updates(**kwargs):
     fullname_updates = Fullname_update.objects()
-    if len(fullname_updates == 0):
+    # print(type(fullname_updates))
+    if len(fullname_updates) == 0:
         return None
     else:
         return fullname_updates
@@ -103,16 +104,16 @@ def get_fullname_updates(**kwargs):
 @connect_with_middleware_database
 def get_fullname_updates_by_username(username, **kwargs):
     fullname_updates = Fullname_update.objects(user_name=username)
-    if len(fullname_updates == 0):
+    if len(fullname_updates) == 0:
         return None
     else:
-        return fullname_updates
+        return fullname_updates.first()
 
 
 @connect_with_middleware_database
 def get_follower_updates(**kwargs):
     followers_updates = Followers_update.objects()
-    if len(followers_updates == 0):
+    if len(followers_updates) == 0:
         return None
     else:
         return followers_updates
@@ -121,7 +122,7 @@ def get_follower_updates(**kwargs):
 @connect_with_middleware_database
 def get_follower_updates_by_username(username, **kwargs):
     followers_updates = Followers_update.objects(username)
-    if len(followers_updates == 0):
+    if len(followers_updates) == 0:
         return None
     else:
         return followers_updates
@@ -130,7 +131,7 @@ def get_follower_updates_by_username(username, **kwargs):
 @connect_with_middleware_database
 def get_liked_posts_updates(**kwargs):
     liked_post_updates = LikedPosts_update.objects()
-    if len(liked_post_updates == 0):
+    if len(liked_post_updates) == 0:
         return None
     else:
         return liked_post_updates
@@ -139,7 +140,7 @@ def get_liked_posts_updates(**kwargs):
 @connect_with_middleware_database
 def get_liked_posts_updates_by_username(username, **kwargs):
     liked_post_updates = LikedPosts_update.objects(username=username)
-    if len(liked_post_updates == 0):
+    if len(liked_post_updates) == 0:
         return None
     else:
         return liked_post_updates
