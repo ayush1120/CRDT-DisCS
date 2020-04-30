@@ -32,7 +32,7 @@ def get_age_updates(**kwargs):
 
 @connect_with_middleware_database
 def get_age_updates_by_username(username, **kwargs):
-    age_updates = Age_update.objects(user_name=username)
+    age_updates = Age_update.objects(user_name=username).first()
     if len(age_updates)==0:
         return None
     else:

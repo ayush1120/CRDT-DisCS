@@ -32,13 +32,36 @@ class TwoPSet:
         print("R: ", end="")
         self.R.display()
 
+
+    def addedValues(self):
+        addedValues = []
+        for elem in self.A.payload:
+            if self.A.payload.count(elem) > self.R.payload.count(elem):
+                if elem not in addedValues:
+                    addedValues.append(elem)
+        return addedValues
+
+    def removedValues(self):
+        removedValues = []
+        for elem in self.R.payload:
+            if self.R.payload.count(elem) > self.A.payload.count(elem):
+                if elem not in removedValues:
+                    removedValues.append(elem)
+        return removedValues
+
+
     def toDict(self):
+        self.A = self.A.toDict()
+        self.R = self.R.toDict()
+        # print(self.__dict__)
         return self.__dict__
     
-    def loadFromDict(dict_input):
-        twopset = TwoPSet()
-        twopset.__dict__ = dict_input
-        return twopset
+    def loadFromDict(self, dict_input):
+        A = GSet()
+        R = GSet()
+        self.A =  A.loadFromDict(dict_input['A'])
+        self.R =  R.loadFromDict(dict_input['R'])
+        return self
 
 
 
@@ -52,8 +75,17 @@ if __name__ == "__main__":
     a.add(3)
     a.remove(3)
     a.add(3)
+    a.remove(3)
+    a.remove(3)
     # a.remove(4)
     # a.add(4)
-    print(a.query(3))
-    a.display()
-    # print(a.query(4))
+    print('Added Values : ', a.addedValues())
+    print('Removed Valiues : ', a.removedValues())
+
+
+    b = a.toDict()
+    # c = TwoPSet.loadFromDict(b) # This will not work
+    c = TwoPSet().loadFromDict(b) # This will work
+    
+    # print(' Dict TwoPSet     :  ', b)
+    # print(' Loaded from Dict :  ', c)

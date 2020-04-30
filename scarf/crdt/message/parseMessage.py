@@ -4,7 +4,7 @@ sys.path.append('../../../')
 import mongoengine
 import json
 
-from discs.data.middleware.users_update import Users_update
+from discs.data.middleware.user_update import User_update
 from discs.data.middleware.posts_updates import Posts_update
 from discs.data.middleware.age_update import Age_update
 from discs.data.middleware.post_content_updates import Post_content_update
@@ -19,9 +19,9 @@ def parse_user_update_msg(msg):
     users = json.load(data[0]['users'])
 
     # msg = {
-    #     "type": 'Users_update',
+    #     "type": 'User_update',
     #     "data": [ 
-    #          {'users' : Users_update.objects().first().users}
+    #          {'users' : User_update.objects().first().users}
     #     ]
     # }
     return users
@@ -34,13 +34,13 @@ def parse_age_update_msg(msg):
     for element in data:
         new_object = Age_update()
         new_object.user_name = element['user_name']
-        new_object.update = element['update']
+        new_object.update_value = element['update']
         Age_update_objects.append(element)
 
     # for obj in Age_update.objects():
     #     data.append({
     #         'user_name' : obj.username,
-    #         'update' : obj.update
+    #         'update' : obj.update_value
     #     }) 
     # msg = {
     #     'type' : 'Age_update',
@@ -55,13 +55,13 @@ def parse_post_updates_msg(msg):
     for element in data:
         new_object = Post_update()
         new_object.username = element['username']
-        new_object.update = element['update']
+        new_object.update_value = element['update']
         Post_update_objects.append(element)
     
     # for obj in Post_update.objects():
     #     data.append({
     #         'username' : obj.username,
-    #         'update' : obj.update
+    #         'update' : obj.update_value
     #     }) 
     # msg = {
     #     'type' : 'Post_update',
@@ -76,13 +76,13 @@ def parse_post_content_update_msg(msg):
     for element in data:
         new_object = Post_content_update()
         new_object.postid = element['postid']
-        new_object.update = element['update']
+        new_object.update_value = element['update']
         Post_content_update_objects.append(element)
 
     # for obj in Post_content_update.objects():
     #     data.append({
     #         'postid' : obj.postid,
-    #         'update' : obj.update
+    #         'update' : obj.update_value
     #     }) 
     # msg = {
     #     'type' : 'Post_content_update',
@@ -97,13 +97,13 @@ def parse_likedposts_updates_msg(msg):
     for element in data:
         new_object = Likedposts_updates()
         new_object.username = element['username']
-        new_object.update = element['update']
+        new_object.update_value = element['update']
         Likedposts_updates_objects.append(element)
 
     # for obj in Likedposts_update.objects():
     #     data.append({
     #         'username' : obj.username,
-    #         'update' : obj.update
+    #         'update' : obj.update_value
     #     }) 
     # msg = {
     #     'type' : 'Likedposts_update',
@@ -118,13 +118,13 @@ def parse_fullname_update_msg(msg):
     for element in data:
         new_object = Fullname_update()
         new_object.user_name = element['username']
-        new_object.update = element['update']
+        new_object.update_value = element['update']
         Fullname_update_objects.append(element)
 
     # for obj in Fullname_update.objects():
     #     data.append({
     #         'user_name' : obj.username,
-    #         'update' : obj.update
+    #         'update' : obj.update_value
     #     }) 
     # msg = {
     #     'type' : 'Fullname_update',
@@ -139,13 +139,13 @@ def parse_nationality_update_msg(msg):
     for element in data:
         new_object = Nationality_update()
         new_object.user_name = element['username']
-        new_object.update = element['update']
+        new_object.update_value = element['update']
         Nationality_update_objects.append(element)
 
     # for obj in Nationality_update.objects():
     #     data.append({
     #         'user_name' : obj.username,
-    #         'update' : obj.update
+    #         'update' : obj.update_value
     #     }) 
     # msg = {
     #     'type' : 'Nationality_update',
@@ -160,14 +160,14 @@ def parse_followers_update_msg(msg):
     for element in data:
         new_object = Followers_update()
         new_object.user_name = element['username']
-        new_object.update = element['update']
+        new_object.update_value = element['update']
         Followers_update_objects.append(element)
 
 
     # for obj in Followers_update.objects():
     #     data.append({
     #         'user_name' : obj.username,
-    #         'update' : obj.update
+    #         'update' : obj.update_value
     #     }) 
     # msg = {
     #     'type' : 'Followers_update',
@@ -180,7 +180,7 @@ def parse_followers_update_msg(msg):
 def parse_message(msg):
     msg_type = msg["type"]
 
-    if msg_type == 'Users_update':
+    if msg_type == 'User_update':
         parse_user_update_msg(msg)
     elif msg_type == 'Age_update':
         parse_age_update_msg(msg)

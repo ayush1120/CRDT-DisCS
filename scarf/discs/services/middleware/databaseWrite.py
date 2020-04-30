@@ -103,14 +103,13 @@ def update_user_age(username, age, **kwargs):
     """
     user_age_updates = Age_update.objects(user_name=username).first()
     if user_age_updates is None:
-        user_age_updates_lww = LWWElementSet()
+        user_age_updates_lww = LWW()
         user_age_updates = Age_update()
         user_age_updates.user_name = username
         user_age_updates.update_value = json.dumps(user_age_updates_lww.__dict__)
-        # user_age_updates.save()
 
     user_age_updates_lww_dict = json.loads(user_age_updates.update_value)
-    user_age_updates_lww = LWWElementSet()
+    user_age_updates_lww = LWW()
     user_age_updates_lww.__dict__ = user_age_updates_lww_dict
 
     user_age_updates_lww.add(age)

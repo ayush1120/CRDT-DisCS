@@ -173,3 +173,52 @@ FOR TODAY !! MUST DO
 Important Kaam
 twoPSet is not working as required -> isko sahi karna hai
 lww check karna hai
+
+
+
+#Terminal Interface
+seprate folder -> dashboard 
+    options like hello
+    choices in terminal: login, see all post, 
+
+    Dashboard: 1. Hello
+                2.login 
+                3. Add User
+                4. See all users
+                5. See all post
+
+    see all user: username print 
+    import from underlyingdatabaseread() like read users, print users
+
+    terminal output clear before new 
+    numbers se option dikhane
+    enter to continue -> dashboard
+
+    say hello -> line daalni "say hello should be run"
+    #login -> either press Esc to go back
+                enter a username and press enter
+                only user name dikhane, not details
+                check hoga username exist...if not exist (error and go back to dashboard)
+                        **Logged In Dashboard**
+                        exist karta...login hogya and new screen in ternimal and clear terminal before
+                        1. see profile details  
+                                : on selection : print user details
+                        2. see my posts
+                                print post
+                        3. follow a user
+                                : usernamme dikhayenge , phir input maangege username, after recieving input, 
+                                follow that username, & go back to Logged In Dashboard 
+                        4. see my followers
+                                :  iske folowers ko print karna hai
+                        5. like a post
+                                : posts, numbering ke saath, jo number select karega, 
+                                us post ko like kar denge & back to Logged in Dashboard
+                        6. last option logout
+                                : logout kardenge/ go to main dashboard 
+
+# ADD User
+    fullname
+    age
+    Nationality
+    (User ki class me check karna constraints)
+

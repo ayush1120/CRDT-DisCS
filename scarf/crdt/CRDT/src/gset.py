@@ -27,7 +27,6 @@ class GSet:
     def toDict(self):
         return self.__dict__
     
-    def loadFromDict(dict_input):
-        gset = GSet()
-        gset.__dict__ = dict_input
-        return gset
+    def loadFromDict(self, dict_input):
+        self.__dict__ = dict_input
+        return self

@@ -217,8 +217,8 @@ if __name__ == "__main__":
 
     update_user_age(last_user_name, 101)
     
-    user_age_updates = middlewareDatabaseRead.get_age_updates_by_username(username)
-    print(last_user_name, user_age_updates)
+    user_age_updates = middlewareDatabaseRead.get_age_updates_by_username(last_user_name)
+    print(last_user_name, user_age_updates.update_value)
 
     users = readUsers(dbName=dbName)
     print_users(users)

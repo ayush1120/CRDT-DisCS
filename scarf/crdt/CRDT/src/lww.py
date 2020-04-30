@@ -1,5 +1,12 @@
 from datetime import datetime
-
+import time
+import logging
+logger = logging.getLogger('CRDT Logger')
+logger.setLevel(logging.DEBUG)
+console = logging.StreamHandler()
+console.setLevel(logging.DEBUG)
+# add the handler to the root logger
+logger.addHandler(console)
 
 class LWWFunctions:
     @staticmethod
@@ -75,3 +82,56 @@ class LWWElementSet():
         lwwElementSet = LWWElementSet()
         lwwElementSet.__dict__ = dict_input
         return lwwElementSet
+
+class LWW():
+    def __init__(self):
+        self.value = None
+        self.timestamp = time.time()
+
+    def add(self, elem):
+        current_time = time.time()
+        if(current_time > self.timestamp):
+            self.value = elem
+            self.time = current_time
+
+    def query(self):
+        return self.value
+
+    def merge(self, lww):
+        if(self.timestamp < lww.timestamp):
+            self.value = lww.value
+            self.timestamp = lww.timestamp
+
+    def display(self):
+        print(self.value, self.timestamp)
+    
+    def toDict(self):
+        return self.__dict__
+    
+    def loadFromDict(dict_input):
+        lwwElement = LWW()
+        lwwElement.__dict__ = dict_input
+        return lwwElement
+
+if __name__ == "__main__":
+    logging.basicConfig(filename='logs.log', 
+                    format='%(asctime)s %(message)s', 
+                    filemode='w') 
+    logger.setLevel(level=logging.DEBUG)
+
+    a = LWW()
+    a.add(5)
+    a.add(4)
+    b = LWW()
+    b.add(6)
+    a.merge(b)
+    # print(a.query())
+    logger.debug(f'a  value :  {a.query()}')   
+    c = LWW()
+    c.add("Hemant")
+    d = LWW()
+    d.add("GVV")
+    c.merge(d)
+    # print(c.query())
+    logger.debug(f'c value : {c.query()}')
+    

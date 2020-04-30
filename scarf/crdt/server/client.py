@@ -1,4 +1,8 @@
 import sys, requests
+sys.path.append('../../')
+
+
+from crdt.server.config import NUM_SERVERS
 
 
 def hello(server_address, message):      
@@ -23,25 +27,50 @@ def shutdown_server(server_address):
         return e
     return 'Server Closed'
 
+
 if __name__ == "__main__":
-    server_address = "http://0.0.0.0:6000"+"/"
+    server_index = 1
+    print('Selected Server Index : ', server_index)
     message = {
         'type': 'request_data',
         'data_type' : 'Users_update'
     }
     flag=1
+
+    
+
     while (True):
-        a = input()
+        server_address = "http://0.0.0.0:600" + str(server_index) +"/"
+        print('\nSelected Server Index : ', server_index)
+        print('\ne to change Server Index')
+        print('r to run hello')
+        print('q to shutdown selected server')
+        print('z to shutdown all the servers\n')
+        a = input('Enter Operation: ')
         if a == 'q':
             output = shutdown_server(server_address+'stopServer')
+            print(output)
 
         elif a=='r':
             output = hello(server_address+'sendRequest', message)
             print(output)
 
-        elif a=='s':
-            if flag==1:
-                from server import app
-                app.run()
-                flag=2
+        elif a=='e':
+            server_index = int(input('Enter Server Index : '))
+            if (server_index<0 or server_index>NUM_SERVERS):
+                print('Wrong Serber Index Provided. Please Check config.')
+                server_index = 1
+        elif a=='z':
+            for i in range(1,NUM_SERVERS+1):
+                server_index = i
+                print(f'Quitting Server {i}')
+                server_address = "http://0.0.0.0:600" + str(server_index) +"/"
+                output = shutdown_server(server_address+'stopServer')
+                print(output)
+            
+            print('All servers have been shut down.')
+            break
+            
+
+
 
