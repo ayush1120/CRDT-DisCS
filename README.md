@@ -60,14 +60,18 @@ $ cd python <path to repo>/scarf/terminal/interface.py
 ## To test the raft based consensus
 Currently under development, you can see proof of work by running the following files as :
 ```sh
-$ run the servers 
+$ python <path to repo>/Vesper/run_multiple_servers.py
+```
+Then in separate terminal - 
+```sh
+$ python <path to repo>/Vesper/raft2DB.py 
 ```
 
 #### To Run the Web Interface
 
 Start the django server in development mode via command
 ```sh
-$ python manage.py runserver
+$ python <path to repo>/scarf/manage.py runserver
 ```
 Visit http://localhost:8000/ in your browser to see the web interface. 
 
