@@ -27,6 +27,14 @@ def shutdown_server(server_address):
         return e
     return 'Server Closed'
 
+def try_internal_comm(server_address, message):
+    try:
+        response = requests.get(server_address, json=message ,timeout=5)
+    except Exception as e:
+        return e
+    return response.json
+
+
 
 if __name__ == "__main__":
     server_index = 1
@@ -41,9 +49,11 @@ if __name__ == "__main__":
 
     while (True):
         server_address = "http://0.0.0.0:600" + str(server_index) +"/"
+        
         print('\nSelected Server Index : ', server_index)
         print('\ne to change Server Index')
         print('r to run hello')
+        print('p to test async requests')
         print('q to shutdown selected server')
         print('z to shutdown all the servers\n')
         a = input('Enter Operation: ')
@@ -60,6 +70,12 @@ if __name__ == "__main__":
             if (server_index<0 or server_index>NUM_SERVERS):
                 print('Wrong Serber Index Provided. Please Check config.')
                 server_index = 1
+
+        elif a=='p':
+            server_address = server_address + 'testSending'
+            output = try_internal_comm(server_address, 'hello')
+            print(output)
+        
         elif a=='z':
             for i in range(1,NUM_SERVERS+1):
                 server_index = i

@@ -199,7 +199,9 @@ def change_post_content(post_id, content, **kwargs):
     """
     if(check_post(post_id)):
         post = Post.objects(id=post_id).first()
+        # print(post.content)
         post.content = content
+        # print(post.content)
         post.save()
         return True
     return False

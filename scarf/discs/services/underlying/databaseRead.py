@@ -8,6 +8,22 @@ from discs.data.underlying.posts import Post
 
 import mongoengine
 
+
+@connect_with_database
+def check_user(name):
+    user = User.objects(username=name).first()
+    if user is None:
+        return False
+    return True
+
+@connect_with_database
+def check_post(post_id):
+    post = Post.objects(id=post_id).first()
+    if post is None:
+        return False
+    return True
+
+
 @connect_with_database
 def get_user_by_id(pk, **kwargs):
     """

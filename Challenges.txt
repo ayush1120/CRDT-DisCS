@@ -1,0 +1,12 @@
+Biggest one: Corona
+1. Connectivity
+2. Online Communication
+3. Have to be alone :( 
+4. Less guidance
+
+----------------------------------------------------xxxxxxxx------------------------------------------------------------------
+
+Tasks not achieved
+1. UI of few functionalities left - that are completed on the backend 
+2. Implementations for benchmarking arranged, the process of benchmarking remaining - to be decided based on policies
+3. Yet to be executed on real-life datasets : challenges faced due to suppression of data

@@ -83,7 +83,7 @@ class LWWElementSet():
         lwwElementSet.__dict__ = dict_input
         return lwwElementSet
 
-class LWW():
+class LWW(): # lAST WRITER WINS
     def __init__(self):
         self.value = None
         self.timestamp = time.time()
@@ -98,7 +98,7 @@ class LWW():
         return self.value
 
     def merge(self, lww):
-        if(self.timestamp < lww.timestamp):
+        if(self.timestamp < lww.timestamp): # TIMESTAMPS
             self.value = lww.value
             self.timestamp = lww.timestamp
 

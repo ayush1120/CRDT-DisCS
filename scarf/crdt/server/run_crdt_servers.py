@@ -16,7 +16,7 @@ with concurrent.futures.ProcessPoolExecutor() as executor:
     results = [executor.submit(startServer, index) for index in indices]
     
     for f in concurrent.futures.as_completed(results):
-        print(f.result())
+        pass
     
 
 finish = time.perf_counter()

@@ -3,6 +3,7 @@ sys.path.append('../../')
 
 import mongoengine
 import logging
+import asyncio
 
 from discs import manageDatabases
 
@@ -34,6 +35,8 @@ class Node:
         self.middlewareDB = 'CRDT-DisCS_Node_Middleware_' + str(index)
         self.coreDB       = 'CRDT-DisCS_Node_Core_'       + str(index)
 
+        self.loop = asyncio.get_event_loop()
+
 
         if deleteOldDatabases:
             manageDatabases.deleteDatabase(dbName=self.coreDB)
@@ -46,6 +49,7 @@ class Node:
         print('Server Node Established.')
         print(f'Connected to {self.coreDB}.')
         print(f'Connected to {self.middlewareDB}.')
+
 
     def get_other_addresses(self):
         other_indices = []

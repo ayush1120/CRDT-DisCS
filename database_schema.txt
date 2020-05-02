@@ -1,65 +1,65 @@
 Schema For Underlying Database -
 
-Users 
-    User Entry
-        pk
-        username (unique)
-        Full Name
-        Nationality
-        Age
-        Followers  < [username] > 
-        Following  < [username] > // New 
-        Posts < [post_ids] >
-        Liked Posts <[post_ids]>
+Users                                                                               
+    User Entry                                                                      
+        pk                                                                          
+        username (unique)                                                           
+        Full Name                                                                   
+        Nationality                                                                 
+        Age                                                                         
+        Followers  < [username] >                                                       
+        Following  < [username] > // New                                            
+        Posts < [post_ids] >                                                        
+        Liked Posts <[post_ids]>                                                    
 
 
-Post
-    Posts
-        post_id
-        owner_id
-        content
-        date
-        time
-        likes  (no dislike but unlike should be there)
+Post                                                                              
+    Posts                                                                         
+        post_id                                                                   
+        owner_id                                                                  
+        content                                                                   
+        date                                                                      
+        time                                                                      
+        likes  (no dislike but unlike should be there)                            
 
 
 
-Schema For Middleware Database  (In MongoDB)
+Schema For Middleware Database  (In MongoDB)                                        SM AS GV
 
 
-# Store (From Memory to Database) : (post_updates.to_dict).to_json_String   // type(post_updates) = twoPSet
-# Load (From Database to Memory) :  new 2pSet_object.__dict__ =  load_json_to_dict(post_updates)   // type(post_updates) = json
+# Store (From Memory to Database) : (post_updates.to_dict).to_json_String   // type(post_updates) = twoPSet                                 Saptarshi Ayush
+# Load (From Database to Memory) :  new 2pSet_object.__dict__ =  load_json_to_dict(post_updates)   // type(post_updates) = json             Saptarshi Ayush
 
 
 1. Collection Users_updates: 
-entries
+entries                                                                             
     id=1. users_Gset 
 
-2. Collection FullName Update
+2. Collection FullName Update                                                       
     id=1, user=username(unique) , full_name // type(full_name) = LWW
 
-3. Collection Nationality Update
+3. Collection Nationality Update                                                    
     id=1, user=userneme(unique) , nationality_updates // type( nationality_updates ) = LWW 
 
-4. Collection Age Update
+4. Collection Age Update                                                            
     id=1, user=username(unique) , age_update // type(age_update) = LWW
 
-5. Collection Followers
+5. Collection Followers                                                             
     id=1, user=username(unique) , followers // type(followers) = twoPset of usernames
 
 
-6. Collection Post_Update  // addition or deletion of posts
+6. Collection Post_Update  // addition or deletion of posts                          
 entries:
-    id=1, user=username(unique)  /* Owner */ , post_updates // type(post_updates) = twoPSet of post_ids
+    id=1, user=username(unique)  /* Owner */ , post_updates // type(post_updates) = twoPSet of post_ids             Saptarshi
 
-query example -> Post_Update.objects(username='ayush')  
+query example -> Post_Update.objects(username='ayush')                                
 
 
-7. Collection LikedPosts Update
+7. Collection LikedPosts Update                                                       
     id=1, user=username(unique) , liked_post_update // type(liked_post_update) = twoPset of post_ids
 
 
-8. Collection Post_Content_Update
+8. Collection Post_Content_Update                                                       
     id=1, post_id=post_id, post_content // type(post_content) = LWW
 
 
@@ -69,57 +69,57 @@ query example -> Post_Update.objects(username='ayush')
 Steps: 
 
 1> Underlying & Middleware Database Creation
-    a. Schema Deciding for underlying database (See Above)             ✔
-    b. Code & make mongo database                                      ✔
-    c. Decide schema for middleware (See Above)                        ✔
-    d. make middleware database by code in json & mongoDB              ✔
+    a. Schema Deciding for underlying database (See Above)             ✔               Saptarshi Gaurav Ayush
+    b. Code & make mongo database                                      ✔               Ayush
+    c. Decide schema for middleware (See Above)                        ✔               Saptarshi Gaurav Ayush
+    d. make middleware database by code in json & mongoDB              ✔               Ayush Gaurav
 
 
-2>  a. Add fake data
+2>  a. Add fake data                                                                            Ayush
     b.
-        (i). Make Generic Functions for reading data                        UnderlyingDB
-            a. Get User data by id                                              ✔
-            b. Get User data by username                                        ✔                                                  
-            c. Get Posts by user_id (should return all post ids)                ✔                              
-            d. Get Posts by username (should return all post ids)               ✔                              
-            e. Get Post_details by post_id                                      ✔       
-            f. Get Followers by user_id                                         ✔     
-            g. Get Followers by username                                        ✔      
-            h. Check if post is liked or not by user_id                         ✔                    
-            i. Get all liked posts by a username                                ✔               
-            j. Get all liked posts by a user_id                                 ✔             
-            k. Get Following by user_id                                         ✔     
-            l. Get Following by username                                        ✔ 
-            m. Get Number of Likes by post_id                                   ✔
-            n. Check if post is liked or not by username                        ✔
+        (i). Make Generic Functions for reading data                        UnderlyingDB        
+            a. Get User data by id                                              ✔              Gaurav
+            b. Get User data by username                                        ✔              Gaurav                                    
+            c. Get Posts by user_id (should return all post ids)                ✔              Gaurav          
+            d. Get Posts by username (should return all post ids)               ✔              Gaurav          
+            e. Get Post_details by post_id                                      ✔              Saptarshi
+            f. Get Followers by user_id                                         ✔              Saptarshi
+            g. Get Followers by username                                        ✔              Saptarshi
+            h. Check if post is liked or not by user_id                         ✔              Saptarshi
+            i. Get all liked posts by a username                                ✔              Saptarshi
+            j. Get all liked posts by a user_id                                 ✔              Ayush
+            k. Get Following by user_id                                         ✔              Ayush
+            l. Get Following by username                                        ✔              Ayush
+            m. Get Number of Likes by post_id                                   ✔              Ayush
+            n. Check if post is liked or not by username                        ✔              Ayush
             
         (ii). Make Generic Functions to update or write attributes          UnderlyingDB
-            a. Add user                                                         ✔
-            b. Change user fullname -> Check if user Exists                     ✔
-            c. Change Nationality -> Check if user Exists                       ✔  
-            d. Change Age -> Check if user Exists                               ✔                
-            e. Add Follower -> Check if user Exists                             ✔                    
-            f. Remove Follower -> Check if user Exists                          ✔                       
-            g. Add post -> Check if user Exists                                 ✔              
-            h. Change post content -> Check if post exists                      ✔                           
-            i. Like a post -> Check if post exists                              ✔                  
-            j. Unlike a post -> Check if post exists                            ✔                     
-            k. Delete a post -> Check if post exists                            ✔                     
+            a. Add user                                                         ✔             Saptarshi
+            b. Change user fullname -> Check if user Exists                     ✔             Gaurav
+            c. Change Nationality -> Check if user Exists                       ✔              Gaurav
+            d. Change Age -> Check if user Exists                               ✔              Ayush
+            e. Add Follower -> Check if user Exists                             ✔              Ayush 
+            f. Remove Follower -> Check if user Exists                          ✔              Ayush    
+            g. Add post -> Check if user Exists                                 ✔              Ayush
+            h. Change post content -> Check if post exists                      ✔              Saptarshi        
+            i. Like a post -> Check if post exists                              ✔              Ayush
+            j. Unlike a post -> Check if post exists                            ✔              Saptarshi  
+            k. Delete a post -> Check if post exists                            ✔              Gaurav
 
 
 
 3>  Above Functions (2 ii.)  should have choice to load to middleware database / write query to raft / do not
-    separate function ->  
-        i. Call above function to update middleware dataset
-        ii. Add data to middleware / raft / or do nothing -> This will Call 4
+    separate function ->                                                                        Gaurav Ayush
+        i. Call above function to update middleware dataset                                     Ayush
+        ii. Add data to middleware / raft / or do nothing -> This will Call 4                   Gaurav
 
 
-4> Make functions to update middleware database
+4> Make functions to update middleware database                                                 Ayush
 
 
-5> Make messages for sending middleware data. -> message making & parsing functions.
+5> Make messages for sending middleware data. -> message making & parsing functions.            Gaurav Ayush
 
-6> Make engine to empty & send middleware data & update middleware data, & get from other databases & merge in middleware, update underlying to latest. 
+6> Make engine to empty & send middleware data & update middleware data, & get from other databases & merge in middleware, update underlying to latest.                   Gaurav Ayush Saptarshi
     
     Assumption:  
         a. There are middleware datbases 1, 2, 3 & 4.
@@ -127,68 +127,71 @@ Steps:
     2's engine's process is written below 
     
     For Consensus in middleware database 2 :
-        a. Fetch data from middleware databases 1, 3 & 4.
-        b. Merge the received data with the CRDT objects in middleware database 2 to achieve the conensus in this database
-        c. Send the updated data in the ordered manner to the underlying database-2
-        d. Clear middleware database 2
+        a. Fetch data from middleware databases 1, 3 & 4.                                         Saptarshi
+        b. Merge the received data with the CRDT objects in middleware database 2 to achieve the conensus in this database          Ayush
+        c. Send the updated data in the ordered manner to the underlying database-2               Ayush
+        d. Clear middleware database 2                                                            Ayush
         
     On fetch call to database 2 :
-        a. Get middleware database 2's data
+        a. Get middleware database 2's data                                                       Saptarshi
         b. Return it 
 
     CRDT consensus is working. 
 
 
 
-7> Implement time stamps
+7> Implement time stamps                                                                           Ayush Gaurav
 
 
 
 
 FOR TODAY !! MUST DO
-1. update_database complete and check -> middleware going and update -> Testing Remaining
+1. update_database complete and check -> middleware going and update -> Testing Remaining           Ayush Gaurav
 
 2. 2 middleware merge code -> assuming message like data
     Alternative Ways To Implement
-        i> merge two middleware data  -> first msg se aata, second apan connected middleware se nikalte aur merge karke ghusa dete  ->  This is decided (delete kab karna ye decide karna)
-        ii> merge two middleware data  -> first msg se aata, secon apn pahle se nikal ke rakh lete, aur merge karte   
+        i> merge two middleware data  -> first msg se aata, second apan connected middleware se nikalte aur merge karke ghusa dete  ->  This is decided (delete kab karna ye decide karna)                  Gaurav
+        ii> merge two middleware data  -> first msg se aata, secon apn pahle se nikal ke rakh lete, aur merge karte                                                                                         Not DONE
 
-3. Code to write to underlying database from middleware
+3. Code to write to underlying database from middleware                                             Ayush Gaurav
         Note : (Add user hai/ Add post) me ye check daalna ki already hain to mat daalo
 
 
-4. Flask servers for CRDT for middleware 
-    a. join merge one code
+4. Flask servers for CRDT for middleware                                                            Ayush
+    a. join merge one code                                                                          Ayush
         ON RECEIVING MESSAGES THEY WILL MERGE THE DATABASE AND WRITE TO UNDERLYING DATABASE 
-    b. flask automation
+    b. flask automation                                                                             Gaurav Ayush
         AUTOMATE MULTIPLE SERVER DEPLOYMENT, TESTING
 
-5. Contact protocol and implementation
+5. Contact protocol and implementation                                                                      Gaurav
     YE KAISE HOGA -> MSGS COMMUNICATION PROTOCOL, KAB KON KISKO KAISE (KAISE - MSGS ME) DATA BHEJEGA 
 
-6. Connect with website
-    a. make all forms 
+6. Connect with website (terminal)                                                                             
+    a. make all forms                                                                               Gaurav                                                               
 
 
 Important Kaam
-twoPSet is not working as required -> isko sahi karna hai
-lww check karna hai
+twoPSet is not working as required -> isko sahi karna hai                                           Saptarshi
+lww check karna hai - done                                                                          Ayush
 
 
 
-#Terminal Interface
-seprate folder -> dashboard 
+#Terminal Interface                                                                                 Gaurav
+seprate folder -> dashboard                                                                         
     options like hello
-    choices in terminal: login, see all post, 
+    choices in terminal: login, see all post,                                                       Gaurav Ayush
 
-    Dashboard: 1. Hello
-                2.login 
-                3. Add User
-                4. See all users
-                5. See all post
+    Dashboard:  1. Hello                                                                            Gaurav
+                2. login                                                                            Ayush
+                3. Add User                                                                         Gaurav
+                4. See all users                                                                    Gaurav
+                5. See all post                                                                     Gaurav
+                6. Edit user                                                                        Gaurav
+                7. Edit post                                                                         Not working rn
+                8. Select connected Node/ server (baadme)                                            Ayush
 
     see all user: username print 
-    import from underlyingdatabaseread() like read users, print users
+    import from underlyingdatabaseread() like read users, print users                               Gaurav
 
     terminal output clear before new 
     numbers se option dikhane
@@ -216,9 +219,33 @@ seprate folder -> dashboard
                         6. last option logout
                                 : logout kardenge/ go to main dashboard 
 
-# ADD User
+# ADD User              
     fullname
     age
     Nationality
     (User ki class me check karna constraints)
+
+TASKS ACCOMPLISHED:
+
+Raft Algorithm implementation                               - Gaurav
+Raft Algorithm reaching consensus through message passing   - Gaurav
+Raft Server connection updated model                        - Ayush
+
+Deciding Schema for underlying and middleware database Creation - All
+Adding Fake Data - Ayush         
+Making functions for reading data from underlying and middleware database          - All
+Making functions for writing data on underlying and middleware database            - All
+Generic function for writing data on both underlying and middleware                - All
+
+Writing CRDT functions to appropriately store the data - GSet, TwoPSet, LWW                            - Saptarshi
+Working on interconversion between CRDT classes and json objects to enable its storage in the database - Ayush Saptarshi
+Make messages for sending middleware data for different type of edit/update requests                   - Saptarshi
+Make Flask servers to transfer the middleware data              - Ayush Gaurav
+Parse messages for reading middleware data                      - Saptarshi
+Merge middleware data after parsing                             - Ayush
+Writing data onto underlying database from the middleware       - Ayush
+Building User Interface for satisfying the requests of the user - Gaurav
+Integration of terminal interface with crdt servers             - Ayush
+Integration of databases to website                             - Ayush
+Video and integration                                           - Ayush
 

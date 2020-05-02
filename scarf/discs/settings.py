@@ -4,9 +4,9 @@ DEBUG = True
 
 NUM_DATABASES = 5
 
-DATABASES_NAMES = ["CRDT-DisCS__DB"+str(i) for i in range(1, NUM_DATABASES+1)]
+DATABASES_NAMES = ['CRDT-DisCS_Node_Core_' +str(i) for i in range(1, NUM_DATABASES+1)]
 
-MIDDLEWARE_DATABASES = ["CRDT-DisCS_Middleware__DB"+str(i) for i in range(1, NUM_DATABASES+1)]
+MIDDLEWARE_DATABASES = ["CRDT-DisCS_Node_Middleware_"+str(i) for i in range(1, NUM_DATABASES+1)]
 
 def connect_with_database(orig_func):
     global DEBUG

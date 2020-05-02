@@ -3,6 +3,8 @@ sys.path.append('../../../')
 
 import mongoengine
 import json
+from bson import json_util
+
 
 from discs.data.middleware.user_update import User_update
 from discs.data.middleware.posts_updates import Posts_update
@@ -14,41 +16,44 @@ from discs.data.middleware.nationality_update import Nationality_update
 from discs.data.middleware.followers_update import Followers_update
 
 
-def parse_user_update_msg(msg):
+from discs.mergeMiddleware import merge_users, add_user_update_to_underlying
+
+
+
+def parse_user_update_msg(msg, **kwargs):
+
     data = msg["data"]
-    users = json.load(data[0]['users'])
+    users = data['users']
+    merge_users(users)
+    add_user_update_to_underlying()
+    return 
 
-    # msg = {
-    #     "type": 'User_update',
-    #     "data": [ 
-    #          {'users' : User_update.objects().first().users}
-    #     ]
-    # }
-    return users
 
-def parse_age_update_msg(msg):
+def parse_age_update_msg(msg, **kwargs):
     data = msg["data"]
+    username = data['username']
+    update_value = data['update_value']
+    merge_age_updates(update_value)
+    add_user_age_update_to_underlying()
+    return 
 
-    Age_update_objects = []
+def parse_fullname_update_msg(msg, **kwargs):
+    data = msg["data"]
+    username = data['username']
+    update_value = data['update_value']
+    merge_fullname_updates(update_value)
+    add_user_fullname_update_to_underlying()
+    return 
 
-    for element in data:
-        new_object = Age_update()
-        new_object.user_name = element['user_name']
-        new_object.update_value = element['update']
-        Age_update_objects.append(element)
+def parse_nationality_update_msg(msg):
+    data = msg["data"]
+    username = data['username']
+    update_value = data['update_value']
+    merge_nationality_updates(update_value)
+    add_user_nationality_update_to_underlying()
+    return 
 
-    # for obj in Age_update.objects():
-    #     data.append({
-    #         'user_name' : obj.username,
-    #         'update' : obj.update_value
-    #     }) 
-    # msg = {
-    #     'type' : 'Age_update',
-    #     'data' : data
-    # }
-    return Age_update_objects
-
-def parse_post_updates_msg(msg):
+def parse_post_updates_msg(msg, **kwargs):
     data = msg["data"]
     Post_update_objects = []
 
@@ -58,37 +63,15 @@ def parse_post_updates_msg(msg):
         new_object.update_value = element['update']
         Post_update_objects.append(element)
     
-    # for obj in Post_update.objects():
-    #     data.append({
-    #         'username' : obj.username,
-    #         'update' : obj.update_value
-    #     }) 
-    # msg = {
-    #     'type' : 'Post_update',
-    #     'data' : data
-    # }
     return Post_update_objects
 
 def parse_post_content_update_msg(msg):
     data = msg["data"]
-    Post_content_update_objects = []
-
-    for element in data:
-        new_object = Post_content_update()
-        new_object.postid = element['postid']
-        new_object.update_value = element['update']
-        Post_content_update_objects.append(element)
-
-    # for obj in Post_content_update.objects():
-    #     data.append({
-    #         'postid' : obj.postid,
-    #         'update' : obj.update_value
-    #     }) 
-    # msg = {
-    #     'type' : 'Post_content_update',
-    #     'data' : data
-    # }
-    return Post_content_update_objects
+    post_id = data['post_id']
+    update_value = data['update_value']
+    merge_post_content_updates(update_value)
+    add_post_content_update_to_underlying()
+    return 
 
 def parse_likedposts_updates_msg(msg):
     data = msg["data"]
@@ -111,62 +94,17 @@ def parse_likedposts_updates_msg(msg):
     # }
     return Likedposts_updates_objects
 
-def parse_fullname_update_msg(msg):
-    data = msg["data"]
-    Fullname_update_objects = []
-
-    for element in data:
-        new_object = Fullname_update()
-        new_object.user_name = element['username']
-        new_object.update_value = element['update']
-        Fullname_update_objects.append(element)
-
-    # for obj in Fullname_update.objects():
-    #     data.append({
-    #         'user_name' : obj.username,
-    #         'update' : obj.update_value
-    #     }) 
-    # msg = {
-    #     'type' : 'Fullname_update',
-    #     'data' : data
-    # }
-    return Fullname_update_objects
-
-def parse_nationality_update_msg(msg):
-    data = msg["data"]
-    Nationality_update_objects = []
-
-    for element in data:
-        new_object = Nationality_update()
-        new_object.user_name = element['username']
-        new_object.update_value = element['update']
-        Nationality_update_objects.append(element)
-
-    # for obj in Nationality_update.objects():
-    #     data.append({
-    #         'user_name' : obj.username,
-    #         'update' : obj.update_value
-    #     }) 
-    # msg = {
-    #     'type' : 'Nationality_update',
-    #     'data' : data
-    # }
-    return Nationality_update_objects
-
 def parse_followers_update_msg(msg):
     data = msg["data"]
-    Followers_update_objects = []
+    
+    usename = data['username']
+    update_value = data['update_value']
 
-    for element in data:
-        new_object = Followers_update()
-        new_object.user_name = element['username']
-        new_object.update_value = element['update']
-        Followers_update_objects.append(element)
 
 
     # for obj in Followers_update.objects():
     #     data.append({
-    #         'user_name' : obj.username,
+    #         'username' : obj.username,
     #         'update' : obj.update_value
     #     }) 
     # msg = {
@@ -177,7 +115,9 @@ def parse_followers_update_msg(msg):
 
 
 
-def parse_message(msg):
+def parse_message(message):
+    msg = json_util.loads(message)
+
     msg_type = msg["type"]
 
     if msg_type == 'User_update':

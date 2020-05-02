@@ -15,6 +15,8 @@ from discs.services.underlying import  databaseRead
 from discs.settings import connect_with_database
 from discs.manageDatabases import listDatabases
 
+from discs import updateDatabases
+
 MAX_USERS = 10
 MIN_USERS = 2
 MAX_POSTS_PER_USER = 5
@@ -34,10 +36,23 @@ fake = Faker()
 def add_fake_users(NUM_FAKE_USERS, **kwargs):
     for _ in range(NUM_FAKE_USERS):
         user = get_fake_user()
-        databaseWrite.add_user(name=user.name,
-            username=user.username,
-            nationality=user.nationality,
-            age=user.age)
+        # databaseWrite.add_user(name=user.name,
+        #     username=user.username,
+        #     nationality=user.nationality,
+        #     age=user.age)
+        if 'serverNodeIndex' in kwargs:
+            serverNodeIndex = kwargs.get('serverNodeIndex')
+            if serverNodeIndex is not None:
+                updateDatabases.add_user(name=user.name,
+                    username=user.username,
+                    nationality=user.nationality,
+                    age=user.age, serverNodeIndex=serverNodeIndex)
+                return
+        updateDatabases.add_user(name=user.name,
+                    username=user.username,
+                    nationality=user.nationality,
+                    age=user.age)
+        
 
 
 @connect_with_database
@@ -51,11 +66,26 @@ def add_fake_posts(NUM_FAKE_POSTS, **kwargs):
             author = users[author_index] 
             post = get_fake_post()
             post.author = author.username
-            post_id =  databaseWrite.add_post(
-                author=post.author,
-                creation_time=post.creation_time,
-                content=post.content
-            )
+            # post_id =  databaseWrite.add_post(
+            #     author=post.author,
+            #     creation_time=post.creation_time,
+            #     content=post.content
+            # )
+            if 'serverNodeIndex' in kwargs:
+                serverNodeIndex = kwargs.get('serverNodeIndex')
+                if serverNodeIndex is not None:
+                    updateDatabases.add_post(
+                        author=post.author,
+                        creation_time=post.creation_time,
+                        content=post.content,
+                        serverNodeIndex=serverNodeIndex)
+                    return
+            
+            updateDatabases.add_post(
+                        author=post.author,
+                        creation_time=post.creation_time,
+                        content=post.content)
+
             # print('\npost_id : ', post_id)
 
 
@@ -79,7 +109,13 @@ def add_random_followers(MAX_NUM_CONNECTIONS, **kwargs):
 
         leader = users[leader_index]
         follower = users[follower_index]
-        databaseWrite.add_follower(leader.username, follower.username)
+        # databaseWrite.add_follower(leader.username, follower.username)
+        if 'serverNodeIndex' in kwargs:
+            serverNodeIndex = kwargs.get('serverNodeIndex')
+            if serverNodeIndex is not None:
+                updateDatabases.add_follower(leader.username, follower.username, serverNodeIndex=serverNodeIndex)
+                return
+        updateDatabases.add_follower(leader.username, follower.username)
 
 
 @connect_with_database
@@ -99,7 +135,13 @@ def add_random_likes(MAX_NUM_LIKES, **kwargs):
         post_index = random.randint(0, num_posts-1)
         post = posts[post_index]
         user = users[user_index]
-        databaseWrite.add_post_likes(post_id=post.id, username=user.username)    
+        # databaseWrite.add_post_likes(post_id=post.id, username=user.username)
+        if 'serverNodeIndex' in kwargs:
+            serverNodeIndex = kwargs.get('serverNodeIndex')
+            if serverNodeIndex is not None:    
+                updateDatabases.add_post_likes(post_id=post.id, username=user.username, serverNodeIndex=serverNodeIndex)    
+                return
+        updateDatabases.add_post_likes(post_id=post.id, username=user.username)
 
 
 

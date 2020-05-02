@@ -3,8 +3,12 @@ import time
 import os, signal
 import json
 import logging
+import concurrent.futures
 import sys
+import requests
 sys.path.append('../../')
+
+
 
 from crdt.server.node import Node
 from crdt.server.config import NUM_SERVERS
@@ -12,14 +16,19 @@ from crdt.server.config import NUM_SERVERS
 app = Flask(__name__)
 
 
-from crdt.server import routes 
+from crdt.server import routes
+from crdt.server.routes import parse_messege 
 
 
 @app.route('/stopServer', methods=['GET'])
 def stopServer():
     logger.debug('Server Shutdown Initiated')
+    
+    serverNode.loop.stop()
     os.kill(os.getpid(), signal.SIGINT)
+    
     logger.debug(f'ServerNode {serverNode.index} is shutting down.')
+    
     return jsonify({ "success": True, "message": "Server is shutting down..." })
 
 
@@ -27,19 +36,73 @@ def stopServer():
 def hello():
     return routes.hello(serverNode)
 
-@app.route('/sendMessage', methods=['POST'])
-def sendDataToAll(data, index):
+
+
+@app.route("/testSending", methods=['GET'])
+def test_sending():
+    message = request.json
+    start_time = time.perf_counter()
+    logger.debug('This was executed')
+    response = sendDataToAll(message)
+    logger.debug('Consensus was reached')
+    finish_time = time.perf_counter()
+    out_string = f'Completed in {round(finish_time-start_time, 3)} seconds...'
+    return jsonify(out_string) 
+
+
+@app.route("/recieveData", methods=['GET'])
+def recieveData():
+    message = request.json
+    logger.debug(f'Recieved Message from Node {message["sender_index"]}')
+    logger.debug(f'Data :  {message["data"]}')
+    sender_index = message["sender_index"]
+    parse_messege(serverNode, sender_index, message)
+    output = 'OK'
+    return jsonify(output)
+    
+
+
+def sendMessage(server_address, message):
+    logger.debug(f'Sending to {server_address}')
+    while True:
+        try:
+            response = requests.get(server_address, json=message)
+            logger.debug(f'Got Response from {server_address}')
+            logger.debug(f'Response : {response.json()}')
+            break
+        except Exception as e:
+            logger.debug(f'Exception Occured : {e}')
+            return None
+            
+
+
+    return response.json
+
+
+
+def sendDataToAll(data):
+    other_addresses = serverNode.other_adresses
     message = {
         'sender_index' : serverNode.index,
         'sender_address': serverNode.server_address,
         'data' : data
     }
 
+    for address in other_addresses:
+        address = address + '/recieveData'
+        response = sendMessage(address, message)
+
+    output = 'OK'
+    return output
+
+        
+
+
 
 
 @app.route('/sendMessage', methods=['POST'])
 def sendAck(message, index):
-    pass
+    return jsonify('lol')
 
 
 
