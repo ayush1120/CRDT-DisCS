@@ -167,6 +167,12 @@ def parseMessage(msg, dbName='CRDT-DisCS_Test'):
                     dbName=dbName)
 
 
+def add_user_with_consensus():
+    pass
+
+def dashboard():
+    pass
+
 if __name__ == "__main__":
     
     deleteDatabase(dbName=dbName)
@@ -186,7 +192,7 @@ if __name__ == "__main__":
 
     from client import put, get
     
-    # mongoengine.register_connection(alias='core', name=dbName)
+    mongoengine.register_connection(alias='core', name=dbName)
     start = time.perf_counter()
     
     addr = "http://127.0.0.1:500" + str(random.randint(0, 2))
@@ -195,7 +201,7 @@ if __name__ == "__main__":
     value = msg
     put(addr, key, value)
     addr = "http://127.0.0.1:500" + str(random.randint(0, 2))
-    print("Recieving Address : ", addr)
+    print("Recieving Address from Server Address : ", addr)
     recv_msg = get(addr, key)
     # print('Recieved message : ',recv_msg)
 
@@ -214,4 +220,3 @@ if __name__ == "__main__":
     mongoengine.disconnect(alias='core')
 
     deleteDatabase(dbName=dbName)
-    # https://www.pluralsight.com/guides/web-scraping-with-request-python

@@ -1,9 +1,9 @@
-# CRDT-Discs
+# [CRDT-DisCS](https://github.com/ayush1120/CRDT-DisCS)
 ### A CRDT Based Distributed Consensus System
 To Learn more visit [this link](https://docs.google.com/document/d/1VCTHx3wVX6Us8y8xRrRbpZXsHLyIKg_P1zGGLV11iZw).
 
 ## Installation Instruction
-
+**Please Make Sure mongoDB is installed and working correctly.**
 ### Cloning Repository 
 Clone the Github Repository.
 
@@ -41,6 +41,29 @@ Initialize Database & Update Migrations
 ```sh
 $ python initialize_database.py
 ```
+**This Initilizes databases with random data, all databases have different data, can be viewed using website interface**
+
+#### To Run CRDT Server Nodes
+```sh
+$ cd python <path to repo>/scarf/crdt/server/run_crdt_servers.py
+```
+*This step clears the databases and after the flasks servers are started now the consensus will be achieved for the updates, called with functions from <ProjectDIR>/scarf/discs/updateDatabases.py*
+
+**Note: Currently CRDT_UPDATE is marked as true, make it false to stop using CRDTs for consensus. RAFT_UPDATE variable will we used in future to achive consensus using RAFT, paxos based protocol**
+
+#### To Run the terminal interface to interact with a single node:
+**Note: CRDT Server Nodes should be started & running in a separate terminal beforehand.**
+```sh
+$ cd python <path to repo>/scarf/terminal/interface.py
+```
+
+## To test the raft based consensus
+Currently under development, you can see proof of work by running the following files as :
+```sh
+$ run the servers 
+```
+
+#### To Run the Web Interface
 
 Start the django server in development mode via command
 ```sh
